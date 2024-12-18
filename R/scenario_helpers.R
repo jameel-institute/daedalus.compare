@@ -82,44 +82,48 @@ get_summary_list <- function(l,
   data.table::setDF(dt)
 }
 
-# #' Get incidence from a list of model outputs
-# #'
-# #' @export
-# get_epidata_list <- function(l,
-#                              names = c("lower", "mean", "upper"),
-#                              ...) {
-#   df_list <- lapply(l, f = function(x) {
-#     get_incidence(x, ...)
-#   })
+#' Get incidence from a list of model outputs
+#'
+#' @param l
+#' @param names
+#' @param ...
+#'
+#' @export
+get_epidata_list <- function(l,
+                             names = c("lower", "mean", "upper"),
+                             ...) {
+  df_list <- lapply(l, get_incidence)
 
-#   #' Title
-#   #'
-#   #' @param x
-#   #'
-#   #' @return
-#   #' @export
-#   #'
-#   #' @examples
-#   total_hosp_list <- lapply(l, f = function(x) {
-#     z <- get_data(x)
-#     z <- dplyr::group_by(
-#       z, "time"
-#     ) %>%
-#       dplyr::filter(compartment == "hospitalised") %>%
-#       dplyr::summarise(
-#         total_hosp = sum(value)
-#       )
+  total_hosp_list <- lapply(l, function(x) {
+    z <- get_data(x)
+    data.table::setDT(z)
 
-#     z
-#   })
+    # TODO: pass option of summarising by age group
+    z <- z[compartment == "hospitalised",
+      list(value = sum(value)),
+      by = "time"
+    ]
+    z$measure <- "total_hosp"
 
-#   # df_list = Map(df_list, total_hosp_list, names,
-#   #               f = function(x, y, n) {
-#   #
-#   #               })
+    z
+  })
 
-#   dplyr::bind_rows(df_list)
-# }
+  dt_list <- Map(
+    df_list, total_hosp_list, names,
+    f = function(incidence_df, hosp_df, n) {
+      dt <- data.table::rbindlist(
+        list(incidence_df, hosp_df)
+      )
+      dt$tag <- n
+
+      dt
+    }
+  )
+
+  dt <- data.table::rbindlist(dt_list)
+
+  dt
+}
 
 #' Run multiple DAEDALUS scenarios
 #'
@@ -180,8 +184,10 @@ run_scenarios <- function(country,
 #' @export
 #'
 #' @examples
-get_summary_data <- function(dt, disease_tags = "default", ...) {
+get_summary_data <- function(dt, disease_tags = "default", ...,
+                             format = c("long", "wide")) {
   # TODO: add input checks, dt must be a data.table
+  epi_summary <- NULL
   dt$epi_summary <- lapply(
     dt$output, get_summary_list, disease_tags, ...
   )
@@ -192,15 +198,24 @@ get_summary_data <- function(dt, disease_tags = "default", ...) {
   dt <- dt[, ..cols_to_keep]
   # nolint end
 
-  dt <- dt[, unlist(dt$epi_summary, recursive = FALSE),
+  dt <- dt[, unlist(epi_summary, recursive = FALSE),
     by = c("response", "duration")
   ]
 
-  data.table::dcast(
-    dt,
-    response + duration + measure ~ tag,
-    value.var = "value"
+  dt <- switch(format,
+    long = {
+      dt
+    },
+    wide = {
+      data.table::dcast(
+        dt,
+        response + duration + measure ~ tag,
+        value.var = "value"
+      )
+    }
   )
+
+  data.table::setDF(dt)
 }
 
 #' Get cost data from DAEDALUS scenarios
@@ -213,20 +228,69 @@ get_summary_data <- function(dt, disease_tags = "default", ...) {
 #' @export
 #'
 #' @examples
-get_cost_data <- function(dt, disease_tags = "default") {
+get_cost_data <- function(dt, disease_tags = "default",
+                          format = c("long", "wide")) {
   # TODO: add input checks
   # NOTE: assume names taken from infection list
   # NOTE: dt must be a data.table for list-columns
 
+  costs <- NULL
   dt$costs <- lapply(dt$output, get_costs_list, disease_tags, "domain")
 
-  dt <- dt[, unlist(dt$costs, recursive = FALSE),
+  dt <- dt[, unlist(costs, recursive = FALSE),
     by = c("response", "duration")
   ]
 
-  data.table::dcast(
-    dt,
-    response + duration + domain ~ tag,
-    value.var = "cost"
+  dt <- switch(format,
+    long = {
+      dt
+    },
+    wide = {
+      data.table::dcast(
+        dt,
+        time + response + measure + duration ~ tag,
+        value.var = "value"
+      )
+    }
   )
+
+  data.table::setDF(dt)
+}
+
+#' Title
+#'
+#' @param dt
+#' @param disease_tags
+#'
+#' @return
+#' @export
+#'
+#' @examples
+get_epicurve_data <- function(dt, disease_tags = "default",
+                              format = c("long", "wide")) {
+  # TODO: add input checks
+  # NOTE: assume names taken from infection list
+  # NOTE: dt must be a data.table for list-columns
+
+  epidata <- NULL
+  dt$epidata <- lapply(dt$output, get_epidata_list, names = disease_tags)
+
+  dt <- dt[, unlist(epidata, recursive = FALSE),
+    by = c("response", "duration")
+  ]
+
+  dt <- switch(format,
+    long = {
+      dt
+    },
+    wide = {
+      data.table::dcast(
+        dt,
+        time + response + measure + duration ~ tag,
+        value.var = "value"
+      )
+    }
+  )
+
+  data.table::setDF(dt)
 }
