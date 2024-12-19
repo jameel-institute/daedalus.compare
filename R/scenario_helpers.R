@@ -159,7 +159,7 @@ run_scenarios <- function(country,
   scenarios$output <- Map(
     scenarios$response, scenarios$duration,
     f = function(resp, dur) {
-      daedalus_rtm(
+      daedalus::daedalus_rtm(
         country, disease_x,
         time_end = dur,
         response_time_start = response_time_start,
@@ -216,6 +216,8 @@ get_summary_data <- function(dt, disease_tags = "default", ...,
   )
 
   data.table::setDF(dt)
+
+  dt
 }
 
 #' Get cost data from DAEDALUS scenarios
@@ -255,6 +257,51 @@ get_cost_data <- function(dt, disease_tags = "default",
   )
 
   data.table::setDF(dt)
+
+  dt
+}
+
+#' Get details of economic costs from output with uncertainty
+#'
+#' @export
+get_econ_costs_list <- function(l) {
+  econ_costs_list <- lapply(l, function(x) {
+    z <- daedalus::get_costs(x)
+    z[["economic_costs"]][
+      c("economic_cost_closures", "economic_cost_absences")
+    ]
+  })
+
+  econ_costs_list <- lapply(econ_costs_list, as.data.frame)
+
+  data.table::rbindlist(econ_costs_list)
+}
+
+#' Get economic cost details from an output data.table
+#'
+#' @export
+get_econ_cost_data <- function(dt) {
+  # TODO: add input checks
+  # NOTE: dt must be a data.table for list-columns
+  # NOTE: no tracking of infection tags, no option to return wide format
+
+  costs <- NULL
+  dt$econ_costs <- lapply(dt$output, get_econ_costs_list)
+
+  dt <- dt[, unlist(econ_costs, recursive = FALSE),
+    by = c("response", "duration")
+  ]
+
+  # switch to long format
+  dt <- data.table::melt(
+    dt,
+    id.vars = c("response", "duration"),
+    value.name = "cost", variable.name = "cost_type"
+  )
+
+  data.table::setDF(dt)
+
+  dt
 }
 
 #' Title
@@ -293,4 +340,6 @@ get_epicurve_data <- function(dt, disease_tags = "default",
   )
 
   data.table::setDF(dt)
+
+  dt
 }

@@ -4,7 +4,7 @@
 \alias{get_epicurve_data}
 \title{Title}
 \usage{
-get_epicurve_data(dt, disease_tags = "default")
+get_epicurve_data(dt, disease_tags = "default", format = c("long", "wide"))
 }
 \arguments{
 \item{disease_tags}{}

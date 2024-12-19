@@ -4,7 +4,7 @@
 \alias{get_cost_data}
 \title{Get cost data from DAEDALUS scenarios}
 \usage{
-get_cost_data(dt, disease_tags = "default")
+get_cost_data(dt, disease_tags = "default", format = c("long", "wide"))
 }
 \arguments{
 \item{...}{}

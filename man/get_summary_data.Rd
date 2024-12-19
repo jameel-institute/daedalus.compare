@@ -4,7 +4,7 @@
 \alias{get_summary_data}
 \title{Get summary data from DAEDALUS scenarios}
 \usage{
-get_summary_data(dt, disease_tags = "default", ...)
+get_summary_data(dt, disease_tags = "default", ..., format = c("long", "wide"))
 }
 \arguments{
 \item{...}{}
