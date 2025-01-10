@@ -145,8 +145,21 @@ run_scenarios <- function(country,
                           ...) {
   # TODO: add input checking
 
+  # handle custom and pre-defined response scenarios
+  if (is.list(response)) {
+    resp_predef <- unlist(Filter(is.character, response))
+    checkmate::assert_subset(resp_predef, names(daedalus::closure_data))
+    custom_responses <- Filter(is.numeric, response)
+    resp_names_custom <- names(custom_responses)
+
+    if (is.null(resp_names_custom)) {
+      resp_names_custom <- glue::glue(
+        "custom_response_{seq_along(custom_responses)}"
+      )
+    }
+  }
   scenarios <- data.table::CJ(
-    response = response, duration = duration
+    response = response, duration = duration, sorted = FALSE
   )
 
   # get range names from disease_x or synthetic names
@@ -169,6 +182,11 @@ run_scenarios <- function(country,
       )
     }
   )
+
+  # replace raw response strings and numerics with names
+  if (is.list(response)) {
+    scenarios$response <- c(resp_predef, resp_names_custom)
+  }
 
   # returned as a `<data.table>` to allow list-columns
   scenarios
