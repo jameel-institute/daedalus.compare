@@ -92,10 +92,10 @@ get_summary_list <- function(l,
 get_epidata_list <- function(l,
                              names = c("lower", "mean", "upper"),
                              ...) {
-  df_list <- lapply(l, get_incidence)
+  df_list <- lapply(l, daedalus::get_incidence)
 
   total_hosp_list <- lapply(l, function(x) {
-    z <- get_data(x)
+    z <- daedalus::get_data(x)
     data.table::setDT(z)
 
     # TODO: pass option of summarising by age group
