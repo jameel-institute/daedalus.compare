@@ -8,5 +8,6 @@
 
 library(testthat)
 library(daedalus.compare)
+library(checkmate)
 
 test_check("daedalus.compare")
