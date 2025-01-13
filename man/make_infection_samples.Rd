@@ -20,7 +20,8 @@ make_infection_samples(
 objects provided by \pkg{distributional}, with names corresponding to
 \code{daedalus::infection_parameter_names}. These are used to generate \code{samples}
 draws from each distribution for the corresponding infection parameters.
-Only arguments which do not vary by age are supported.}
+Arguments which vary by age are supported, with the drawn and scaled value
+treated as the median of the profile vector.}
 
 \item{param_ranges}{An optional named list of two-element vectors, giving the
 ranges to which samples drawn using \code{param_distributions} should be rescaled.

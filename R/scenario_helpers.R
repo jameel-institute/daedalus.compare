@@ -27,7 +27,7 @@ get_costs_list <- function(l,
   checkmate::assert_choice(
     summarise_as, c("domain", "total")
   )
-  costs <- lapply(l, get_costs, summarise_as)
+  costs <- lapply(l, daedalus::get_costs, summarise_as)
 
   costs <- switch(summarise_as,
     domain = {
@@ -70,7 +70,7 @@ get_summary_list <- function(l,
   summary_data <- Map(
     l, names,
     f = function(x, n) {
-      df <- get_epidemic_summary(x, ...)
+      df <- daedalus::get_epidemic_summary(x, ...)
       df$tag <- n
 
       df
@@ -92,6 +92,8 @@ get_summary_list <- function(l,
 get_epidata_list <- function(l,
                              names = c("lower", "mean", "upper"),
                              ...) {
+  compartment <- NULL
+  value <- NULL
   df_list <- lapply(l, daedalus::get_incidence)
 
   total_hosp_list <- lapply(l, function(x) {
@@ -210,6 +212,7 @@ get_summary_data <- function(dt, disease_tags = "default", ...,
     dt$output, get_summary_list, disease_tags, ...
   )
 
+  format <- rlang::arg_match(format)
   # nolint start
   # prevent linting data.table syntax for column selection
   cols_to_keep <- setdiff(colnames(dt), "output")
@@ -304,6 +307,7 @@ get_econ_cost_data <- function(dt) {
   # NOTE: no tracking of infection tags, no option to return wide format
 
   costs <- NULL
+  econ_costs <- NULL
   dt$econ_costs <- lapply(dt$output, get_econ_costs_list)
 
   dt <- dt[, unlist(econ_costs, recursive = FALSE),
@@ -337,6 +341,7 @@ get_epicurve_data <- function(dt, disease_tags = "default",
   # NOTE: assume names taken from infection list
   # NOTE: dt must be a data.table for list-columns
 
+  format <- rlang::arg_match(format)
   epidata <- NULL
   dt$epidata <- lapply(dt$output, get_epidata_list, names = disease_tags)
 
@@ -345,9 +350,7 @@ get_epicurve_data <- function(dt, disease_tags = "default",
   ]
 
   dt <- switch(format,
-    long = {
-      dt
-    },
+    long = dt,
     wide = {
       data.table::dcast(
         dt,
