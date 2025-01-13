@@ -23,7 +23,7 @@ test_that("Running multiple infection and response scenarios", {
     "GBR", infection_list,
     response = "none"
   )
-  expect_data_table(
+  checkmate::expect_data_table(
     output
   )
   checkmate::expect_list(output$output, "list")
@@ -40,7 +40,7 @@ test_that("Running multiple infection and response scenarios", {
     "GBR", infection_list,
     response = responses
   )
-  expect_data_table(
+  checkmate::expect_data_table(
     output,
     nrows = length(responses)
   )
@@ -58,10 +58,10 @@ test_that("Running custom response scenarios", {
   output <- run_scenarios(
     "GBR", "influenza_2009", list(custom = response)
   )
-  expect_data_table(
+  checkmate::expect_data_table(
     output
   )
-  expect_list(
+  checkmate::expect_list(
     output$output, "daedalus_output"
   )
 
@@ -75,10 +75,10 @@ test_that("Running custom response scenarios", {
   output <- run_scenarios(
     "GBR", "influenza_2009", list(response, response)
   )
-  expect_data_table(
+  checkmate::expect_data_table(
     output
   )
-  expect_list(
+  checkmate::expect_list(
     output$output, "daedalus_output"
   )
 
@@ -112,5 +112,26 @@ test_that("Get epi curve data", {
   # TODO: NOT WORKING
   expect_no_condition(
     get_epicurve_data(output)
+  )
+  checkmate::expect_data_frame(
+    get_epicurve_data(output)
+  )
+})
+
+test_that("Get epi summary data", {
+  infection_list <- make_infection_samples("influenza_2009", samples = 10)
+  response <- seq(0.5, daedalus:::N_ECON_SECTORS)
+
+  output <- run_scenarios(
+    "GBR", infection_list,
+    list(custom = response, custom2 = response)
+  )
+
+  # TODO: NOT WORKING
+  expect_no_condition(
+    get_summary_data(output)
+  )
+  checkmate::expect_data_frame(
+    get_summary_data(output)
   )
 })
