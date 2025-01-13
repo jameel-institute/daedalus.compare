@@ -40,7 +40,7 @@ make_infection_samples <- function(name, samples = 100,
   checkmate::assert_subset(
     param_names,
     # setdiff(
-    daedalus::infection_parameter_names,
+    daedalus::infection_parameter_names
     #   NAMES_VECTOR_INF_PARAMS
     # )
   )
@@ -74,7 +74,7 @@ make_infection_samples <- function(name, samples = 100,
     lower = 0, finite = TRUE, any.missing = FALSE
   )
   no_negs_generated <- all(are_good_params)
-  which_has_negs <- which(!are_good_params)
+  which_has_negs <- which(!are_good_params) # nolint lintr cannot parse glue xpr
 
   if (!no_negs_generated) {
     cli::cli_abort(
