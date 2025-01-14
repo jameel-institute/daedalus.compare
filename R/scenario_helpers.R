@@ -1,32 +1,32 @@
-#' Calculate a confidence interval
+#' Calculate an interval
 #'
-#' @param x
-#' @param level
+#' @param x A numeric vector.
+#' @param level The interval level as a numeric vector  with values in the range
+#' \eqn{[0, 100]}. Defaults to `95` for the 95% interval.
 #'
+#' @return A numeric vector of the same length as `level`.
 #' @export
 ci <- function(x, level = 95) {
+  checkmate::assert_numeric(x, finite = TRUE, any.missing = FALSE)
+  checkmate::assert_numeric(level, 0, 100, finite = TRUE, any.missing = FALSE)
+
   z <- 1.0 - (1.0 - (level / 100)) / 2
 
   stats::qnorm(z) * (mean(x) / sqrt(length(x)))
 }
 
-#' Get costs from a list of model outputs
+#' Get pandemic costs from a list of model outputs
 #'
-#' @param l
-#' @param names
-#' @param summarise_as
+#' @param l A list of `<daedalus_output>` objects; each object will be passed to
+#' `daedalus::get_costs()`.
+#' @param names A character vector, intended to apply to elements of `l`.
+#' @param summarise_as A string specifying whether costs are split by domain.
+#' See `daedalus::get_costs()` for more information.
 #'
-#' @export
+#' @keywords internal
 get_costs_list <- function(l,
-                           names = c("lower", "mean", "upper"),
-                           summarise_as = "domain") {
-  checkmate::assert_character(
-    names,
-    len = length(l)
-  )
-  checkmate::assert_choice(
-    summarise_as, c("domain", "total")
-  )
+                           names,
+                           summarise_as = c("domain", "total")) {
   costs <- lapply(l, daedalus::get_costs, summarise_as)
 
   costs <- switch(summarise_as,
@@ -57,20 +57,17 @@ get_costs_list <- function(l,
   costs
 }
 
-#' Get epidemic summary from a list of model outputs
+#' Get epidemic summary data from a list of model outputs
 #'
-#' @param l
-#' @param names
-#' @param ...
+#' @inheritParams get_costs_list
 #'
-#' @export
+#' @keywords internal
 get_summary_list <- function(l,
-                             names = c("lower", "mean", "upper"),
-                             ...) {
+                             names = c("lower", "mean", "upper")) {
   summary_data <- Map(
     l, names,
     f = function(x, n) {
-      df <- daedalus::get_epidemic_summary(x, ...)
+      df <- daedalus::get_epidemic_summary(x)
       df$tag <- n
 
       df
@@ -82,16 +79,12 @@ get_summary_list <- function(l,
   data.table::setDF(dt)
 }
 
-#' Get incidence from a list of model outputs
+#' Get incidence data from a list of model outputs
 #'
-#' @param l
-#' @param names
-#' @param ...
+#' @inheritParams get_costs_list
 #'
-#' @export
-get_epidata_list <- function(l,
-                             names = c("lower", "mean", "upper"),
-                             ...) {
+#' @keywords internal
+get_epidata_list <- function(l, names) {
   compartment <- NULL
   value <- NULL
   df_list <- lapply(l, daedalus::get_incidence)
@@ -129,13 +122,9 @@ get_epidata_list <- function(l,
 
 #' Run multiple DAEDALUS scenarios
 #'
-#' @param country
-#' @param disease_x
-#' @param response
-#' @param response_time_start
-#' @param response_time_end
-#' @param duration
-#' @param ...
+#' @inheritParams daedalus::daedalus_rtm
+#' @param duration A vector of integer-ish numbers giving the durations over
+#' which to run scenarios. Each scenario is run for each duration.
 #'
 #' @export
 run_scenarios <- function(country,
@@ -143,8 +132,7 @@ run_scenarios <- function(country,
                           response = c("none", "elimination"),
                           response_time_start = 0,
                           response_time_end = 0,
-                          duration = 100,
-                          ...) {
+                          duration = 100) {
   # TODO: add input checking
 
   # handle custom and pre-defined response scenarios
@@ -179,8 +167,7 @@ run_scenarios <- function(country,
         time_end = dur,
         response_time_start = response_time_start,
         response_time_end = response_time_end,
-        response_strategy = resp,
-        ...
+        response_strategy = resp
       )
     }
   )
@@ -196,20 +183,25 @@ run_scenarios <- function(country,
 
 #' Get summary data from DAEDALUS scenarios
 #'
-#' @param df
-#' @param disease_tags
-#' @param ...
+#' @param dt A `<data.table>` resulting from `run_scenarios()`.
+#' @param disease_tags A character vector giving names for replicates within
+#' each scenario.
+#' @param format A string for whether the data should be returned in `"long"` or
+#' `"wide"` format. Returning a 'wide' data.frame is only recommended when there
+#' is a small number of `disease_tags`, typically a triplet of "low", "medium",
+#' and "high" risk scenarios.
 #'
-#' @return
+#' @return A `<data.frame>` summarising epidemiological outcomes: cumulative
+#' infections, deaths, and hospitalisations over the timeframe of the modelled
+#' epidemics.
+#'
 #' @export
-#'
-#' @examples
-get_summary_data <- function(dt, disease_tags = "default", ...,
+get_summary_data <- function(dt, disease_tags,
                              format = c("long", "wide")) {
   # TODO: add input checks, dt must be a data.table
   epi_summary <- NULL
   dt$epi_summary <- lapply(
-    dt$output, get_summary_list, disease_tags, ...
+    dt$output, get_summary_list, disease_tags
   )
 
   format <- rlang::arg_match(format)
@@ -243,14 +235,12 @@ get_summary_data <- function(dt, disease_tags = "default", ...,
 
 #' Get cost data from DAEDALUS scenarios
 #'
-#' @param dt
-#' @param disease_tags
-#' @param ...
+#' @inheritParams get_summary_data
 #'
-#' @return
+#' @return A `<data.frame>` summarising epidemic costs over the timeframe of the
+#' modelled epidemics.
+#'
 #' @export
-#'
-#' @examples
 get_cost_data <- function(dt, disease_tags = "default",
                           format = c("long", "wide")) {
   # TODO: add input checks
@@ -282,9 +272,11 @@ get_cost_data <- function(dt, disease_tags = "default",
   dt
 }
 
-#' Get details of economic costs from output with uncertainty
+#' Get details of economic costs from model outputs
 #'
-#' @export
+#' @param l A list of `<daedalus.output>` objects.
+#'
+#' @keywords internal
 get_econ_costs_list <- function(l) {
   econ_costs_list <- lapply(l, function(x) {
     z <- daedalus::get_costs(x)
@@ -300,13 +292,18 @@ get_econ_costs_list <- function(l) {
 
 #' Get economic cost details from an output data.table
 #'
+#' @inheritParams get_summary_data
+#'
+#' @return A `<data.frame>` summarising economic costs over the timeframe of the
+#' modelled epidemics, broken down into costs due to restrictions and illness-
+#' related absences.
+#'
 #' @export
 get_econ_cost_data <- function(dt) {
   # TODO: add input checks
   # NOTE: dt must be a data.table for list-columns
   # NOTE: no tracking of infection tags, no option to return wide format
 
-  costs <- NULL
   econ_costs <- NULL
   dt$econ_costs <- lapply(dt$output, get_econ_costs_list)
 
@@ -326,15 +323,14 @@ get_econ_cost_data <- function(dt) {
   dt
 }
 
-#' Title
+#' Get epidemiological curves from model data
 #'
-#' @param dt
-#' @param disease_tags
+#' @inheritParams get_summary_data
 #'
-#' @return
+#' @return A `<data.frame>` of individuals in each epidemiological compartments
+#' over the timeframe of the modelled epidemics.
+#'
 #' @export
-#'
-#' @examples
 get_epicurve_data <- function(dt, disease_tags = "default",
                               format = c("long", "wide")) {
   # TODO: add input checks

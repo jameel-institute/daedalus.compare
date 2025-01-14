@@ -2,10 +2,14 @@
 % Please edit documentation in R/scenario_helpers.R
 \name{get_econ_costs_list}
 \alias{get_econ_costs_list}
-\title{Get details of economic costs from output with uncertainty}
+\title{Get details of economic costs from model outputs}
 \usage{
 get_econ_costs_list(l)
 }
-\description{
-Get details of economic costs from output with uncertainty
+\arguments{
+\item{l}{A list of \verb{<daedalus.output>} objects.}
 }
+\description{
+Get details of economic costs from model outputs
+}
+\keyword{internal}

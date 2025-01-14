@@ -39,10 +39,7 @@ make_infection_samples <- function(name, samples = 100,
   param_names <- names(param_distributions)
   checkmate::assert_subset(
     param_names,
-    # setdiff(
     daedalus::infection_parameter_names
-    #   NAMES_VECTOR_INF_PARAMS
-    # )
   )
 
   param_rescale_names <- names(param_ranges)

@@ -2,13 +2,19 @@
 % Please edit documentation in R/scenario_helpers.R
 \name{ci}
 \alias{ci}
-\title{Calculate a confidence interval}
+\title{Calculate an interval}
 \usage{
 ci(x, level = 95)
 }
 \arguments{
-\item{level}{}
+\item{x}{A numeric vector.}
+
+\item{level}{The interval level as a numeric vector  with values in the range
+\eqn{[0, 100]}. Defaults to \code{95} for the 95\% interval.}
+}
+\value{
+A numeric vector of the same length as \code{level}.
 }
 \description{
-Calculate a confidence interval
+Calculate an interval
 }

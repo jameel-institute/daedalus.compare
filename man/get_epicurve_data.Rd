@@ -2,13 +2,25 @@
 % Please edit documentation in R/scenario_helpers.R
 \name{get_epicurve_data}
 \alias{get_epicurve_data}
-\title{Title}
+\title{Get epidemiological curves from model data}
 \usage{
 get_epicurve_data(dt, disease_tags = "default", format = c("long", "wide"))
 }
 \arguments{
-\item{disease_tags}{}
+\item{dt}{A \verb{<data.table>} resulting from \code{run_scenarios()}.}
+
+\item{disease_tags}{A character vector giving names for replicates within
+each scenario.}
+
+\item{format}{A string for whether the data should be returned in \code{"long"} or
+\code{"wide"} format. Returning a 'wide' data.frame is only recommended when there
+is a small number of \code{disease_tags}, typically a triplet of "low", "medium",
+and "high" risk scenarios.}
+}
+\value{
+A \verb{<data.frame>} of individuals in each epidemiological compartments
+over the timeframe of the modelled epidemics.
 }
 \description{
-Title
+Get epidemiological curves from model data
 }

@@ -10,12 +10,12 @@ run_scenarios(
   response = c("none", "elimination"),
   response_time_start = 0,
   response_time_end = 0,
-  duration = 100,
-  ...
+  duration = 100
 )
 }
 \arguments{
-\item{...}{}
+\item{duration}{A vector of integer-ish numbers giving the durations over
+which to run scenarios. Each scenario is run for each duration.}
 }
 \description{
 Run multiple DAEDALUS scenarios
