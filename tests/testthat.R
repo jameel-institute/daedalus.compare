@@ -7,6 +7,7 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(ji.rpkg.template)
+library(daedalus.compare)
+library(checkmate)
 
-test_check("ji.rpkg.template")
+test_check("daedalus.compare")

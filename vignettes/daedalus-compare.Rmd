@@ -1,0 +1,74 @@
+---
+title: "ji-rpkg-template"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ji-rpkg-template}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(daedalus)
+library(daedalus.compare)
+```
+
+```{r}
+gbr <- daedalus_country("GBR")
+infection <- daedalus_infection("influenza_2009")
+
+r0 <- get_data(infection, "r0")
+
+r0_samples <- round(withr::with_seed(1, rnorm(100, r0, 0.2)), 2)
+r0_interval <- ci(r0_samples)
+r0_limits <- c(
+  lower = r0 - r0_interval,
+  mean = r0,
+  upper = r0 + r0_interval
+)
+
+# estimate final sizes in an unmitigated pandemic
+lapply(r0_limits, finalsize::final_size)
+
+disease_x <- lapply(
+  r0_limits, function(x) {
+    daedalus_infection("influenza_2009", r0 = x)
+  }
+)
+
+disease_tags <- c("lower", "mean", "upper")
+names(disease_x) <- disease_tags
+```
+
+```{r}
+times <- c(7, 100)
+
+output <- run_scenarios(
+  gbr, disease_x,
+  response = c("none", "school_closures", "economic_closures", "elimination"),
+  response_time_start = ,
+  response_time_end = 90,
+  duration = times,
+  auto_social_distancing = FALSE
+)
+
+cost_data <- get_cost_data(output, disease_tags = disease_tags)
+
+
+dt <- data.table::copy(output)
+dt$epi_summary <- lapply(
+  dt$output, get_summary_list, disease_tags
+)
+dt <- dt[, setdiff(colnames(dt), "output")]
+
+epi_summary <- get_summary_data(output, disease_tags)
+```
+
