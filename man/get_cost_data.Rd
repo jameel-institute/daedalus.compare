@@ -7,7 +7,19 @@
 get_cost_data(dt, disease_tags = "default", format = c("long", "wide"))
 }
 \arguments{
-\item{...}{}
+\item{dt}{A \verb{<data.table>} resulting from \code{run_scenarios()}.}
+
+\item{disease_tags}{A character vector giving names for replicates within
+each scenario.}
+
+\item{format}{A string for whether the data should be returned in \code{"long"} or
+\code{"wide"} format. Returning a 'wide' data.frame is only recommended when there
+is a small number of \code{disease_tags}, typically a triplet of "low", "medium",
+and "high" risk scenarios.}
+}
+\value{
+A \verb{<data.frame>} summarising epidemic costs over the timeframe of the
+modelled epidemics.
 }
 \description{
 Get cost data from DAEDALUS scenarios

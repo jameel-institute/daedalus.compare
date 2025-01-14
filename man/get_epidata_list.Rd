@@ -2,13 +2,17 @@
 % Please edit documentation in R/scenario_helpers.R
 \name{get_epidata_list}
 \alias{get_epidata_list}
-\title{Get incidence from a list of model outputs}
+\title{Get incidence data from a list of model outputs}
 \usage{
-get_epidata_list(l, names = c("lower", "mean", "upper"), ...)
+get_epidata_list(l, names)
 }
 \arguments{
-\item{...}{}
+\item{l}{A list of \verb{<daedalus_output>} objects; each object will be passed to
+\code{daedalus::get_costs()}.}
+
+\item{names}{A character vector, intended to apply to elements of \code{l}.}
 }
 \description{
-Get incidence from a list of model outputs
+Get incidence data from a list of model outputs
 }
+\keyword{internal}

@@ -2,13 +2,17 @@
 % Please edit documentation in R/scenario_helpers.R
 \name{get_summary_list}
 \alias{get_summary_list}
-\title{Get epidemic summary from a list of model outputs}
+\title{Get epidemic summary data from a list of model outputs}
 \usage{
-get_summary_list(l, names = c("lower", "mean", "upper"), ...)
+get_summary_list(l, names = c("lower", "mean", "upper"))
 }
 \arguments{
-\item{...}{}
+\item{l}{A list of \verb{<daedalus_output>} objects; each object will be passed to
+\code{daedalus::get_costs()}.}
+
+\item{names}{A character vector, intended to apply to elements of \code{l}.}
 }
 \description{
-Get epidemic summary from a list of model outputs
+Get epidemic summary data from a list of model outputs
 }
+\keyword{internal}
