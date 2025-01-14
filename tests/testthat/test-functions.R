@@ -126,12 +126,13 @@ test_that("Get epi summary data", {
     "GBR", infection_list,
     list(custom = response, custom2 = response)
   )
+  disease_tags <- sprintf("tag_%i", seq_along(infection_list))
 
   # TODO: NOT WORKING
   expect_no_condition(
-    get_summary_data(output)
+    get_summary_data(output, disease_tags)
   )
   checkmate::expect_data_frame(
-    get_summary_data(output)
+    get_summary_data(output, disease_tags)
   )
 })
