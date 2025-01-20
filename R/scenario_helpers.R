@@ -17,44 +17,32 @@ ci <- function(x, level = 95) {
 
 #' Get pandemic costs from a list of model outputs
 #'
+#' @description See `daedalus::get_costs()` for more information.
+#'
 #' @param l A list of `<daedalus_output>` objects; each object will be passed to
 #' `daedalus::get_costs()`.
 #' @param names A character vector, intended to apply to elements of `l`.
-#' @param summarise_as A string specifying whether costs are split by domain.
-#' See `daedalus::get_costs()` for more information.
+#'
 #'
 #' @keywords internal
-get_costs_list <- function(l,
-                           names,
-                           summarise_as = c("domain", "total")) {
-  costs <- lapply(l, daedalus::get_costs, summarise_as)
+get_costs_list <- function(l, names) {
+  # no input checks on internal functions
+  costs <- lapply(l, daedalus::get_costs, summarise_as = "domain")
 
-  costs <- switch(summarise_as,
-    domain = {
-      costs <- do.call(rbind, costs)
-      cost_df <- data.table::as.data.table(costs)
-      cost_df$tag <- names
+  costs <- do.call(rbind, costs)
+  cost_df <- data.table::as.data.table(costs)
+  cost_df$tag <- names
 
-      dt <- data.table::melt(
-        cost_df,
-        id.vars = "tag",
-        variable.name = "domain",
-        value.name = "cost"
-      )
-
-      data.table::setDF(dt)
-    },
-    total = {
-      data.frame(
-        cost = unlist(costs),
-        domain = "total",
-        tag = names,
-        stringsAsFactors = FALSE
-      )
-    }
+  cost_df <- data.table::melt(
+    cost_df,
+    id.vars = "tag",
+    variable.name = "domain",
+    value.name = "cost"
   )
 
-  costs
+  data.table::setDF(cost_df)
+
+  cost_df
 }
 
 #' Get epidemic summary data from a list of model outputs
@@ -64,6 +52,7 @@ get_costs_list <- function(l,
 #' @keywords internal
 get_summary_list <- function(l,
                              names = c("lower", "mean", "upper")) {
+  # no input checks on internal functions
   summary_data <- Map(
     l, names,
     f = function(x, n) {
@@ -85,6 +74,7 @@ get_summary_list <- function(l,
 #'
 #' @keywords internal
 get_epidata_list <- function(l, names) {
+  # no input checks on internal functions
   compartment <- NULL
   value <- NULL
   df_list <- lapply(l, daedalus::get_incidence)
@@ -93,7 +83,7 @@ get_epidata_list <- function(l, names) {
     z <- daedalus::get_data(x)
     data.table::setDT(z)
 
-    # TODO: pass option of summarising by age group
+    # NOTE: pass option of summarising by age group
     z <- z[compartment == "hospitalised",
       list(value = sum(value)),
       by = "time"
@@ -120,6 +110,25 @@ get_epidata_list <- function(l, names) {
   dt
 }
 
+#' Get details of economic costs from model outputs
+#'
+#' @param l A list of `<daedalus.output>` objects.
+#'
+#' @keywords internal
+get_econ_costs_list <- function(l) {
+  # no input checks on internal functions
+  econ_costs_list <- lapply(l, function(x) {
+    z <- daedalus::get_costs(x)
+    z[["economic_costs"]][
+      c("economic_cost_closures", "economic_cost_absences")
+    ]
+  })
+
+  econ_costs_list <- lapply(econ_costs_list, as.data.frame)
+
+  data.table::rbindlist(econ_costs_list)
+}
+
 #' Run multiple DAEDALUS scenarios
 #'
 #' @inheritParams daedalus::daedalus_rtm
@@ -128,12 +137,38 @@ get_epidata_list <- function(l, names) {
 #'
 #' @export
 run_scenarios <- function(country,
-                          disease_x,
+                          infection,
                           response = c("none", "elimination"),
                           response_time_start = 0,
                           response_time_end = 0,
                           duration = 100) {
-  # TODO: add input checking
+  # input checking
+  checkmate::assert_multi_class(country, c("daedalus_country", "character"))
+  if (is.character(country)) {
+    country <- daedalus_country(country)
+  }
+  checkmate::assert_multi_class(
+    infection, c("daedalus_infection", "character", "list")
+  )
+
+  checkmate::assert_multi_class(
+    response, c("character", "list")
+  )
+
+  # check simple args
+  checkmate::assert_number(
+    response_time_start,
+    lower = 0, finite = TRUE
+  )
+  checkmate::assert_number(
+    response_time_end,
+    lower = 0, finite = TRUE
+  )
+  checkmate::assert_numeric(
+    duration,
+    lower = 0, finite = TRUE
+  )
+
 
   # handle custom and pre-defined response scenarios
   if (is.list(response)) {
@@ -154,16 +189,16 @@ run_scenarios <- function(country,
 
   # get range names from disease_x or synthetic names
   # assuming 4-digit list lengths
-  disease_tags <- names(disease_x)
+  disease_tags <- names(infection)
   if (is.null(disease_tags)) {
-    disease_tags <- sprintf("replicate_%04i", seq_along(disease_x))
+    disease_tags <- sprintf("replicate_%04i", seq_along(infection))
   }
 
   scenarios$output <- Map(
     scenarios$response, scenarios$duration,
     f = function(resp, dur) {
       daedalus::daedalus_rtm(
-        country, disease_x,
+        country, infection,
         time_end = dur,
         response_time_start = response_time_start,
         response_time_end = response_time_end,
@@ -198,7 +233,10 @@ run_scenarios <- function(country,
 #' @export
 get_summary_data <- function(dt, disease_tags,
                              format = c("long", "wide")) {
-  # TODO: add input checks, dt must be a data.table
+  # input checks
+  checkmate::assert_data_table(dt, any.missing = FALSE)
+  checkmate::assert_character(disease_tags)
+
   epi_summary <- NULL
   dt$epi_summary <- lapply(
     dt$output, get_summary_list, disease_tags
@@ -243,12 +281,16 @@ get_summary_data <- function(dt, disease_tags,
 #' @export
 get_cost_data <- function(dt, disease_tags = "default",
                           format = c("long", "wide")) {
-  # TODO: add input checks
+  # NOTE: add input checks
+  checkmate::assert_data_table(dt)
+  checkmate::assert_character(disease_tags)
+
+  format <- rlang::arg_match(format)
   # NOTE: assume names taken from infection list
   # NOTE: dt must be a data.table for list-columns
 
   costs <- NULL
-  dt$costs <- lapply(dt$output, get_costs_list, disease_tags, "domain")
+  dt$costs <- lapply(dt$output, get_costs_list, disease_tags)
 
   dt <- dt[, unlist(costs, recursive = FALSE),
     by = c("response", "duration")
@@ -261,8 +303,8 @@ get_cost_data <- function(dt, disease_tags = "default",
     wide = {
       data.table::dcast(
         dt,
-        time + response + measure + duration ~ tag,
-        value.var = "value"
+        response + domain + duration ~ tag,
+        value.var = "cost"
       )
     }
   )
@@ -270,24 +312,6 @@ get_cost_data <- function(dt, disease_tags = "default",
   data.table::setDF(dt)
 
   dt
-}
-
-#' Get details of economic costs from model outputs
-#'
-#' @param l A list of `<daedalus.output>` objects.
-#'
-#' @keywords internal
-get_econ_costs_list <- function(l) {
-  econ_costs_list <- lapply(l, function(x) {
-    z <- daedalus::get_costs(x)
-    z[["economic_costs"]][
-      c("economic_cost_closures", "economic_cost_absences")
-    ]
-  })
-
-  econ_costs_list <- lapply(econ_costs_list, as.data.frame)
-
-  data.table::rbindlist(econ_costs_list)
 }
 
 #' Get economic cost details from an output data.table
@@ -300,7 +324,7 @@ get_econ_costs_list <- function(l) {
 #'
 #' @export
 get_econ_cost_data <- function(dt) {
-  # TODO: add input checks
+  # NOTE: add input checks
   # NOTE: dt must be a data.table for list-columns
   # NOTE: no tracking of infection tags, no option to return wide format
 
@@ -333,7 +357,7 @@ get_econ_cost_data <- function(dt) {
 #' @export
 get_epicurve_data <- function(dt, disease_tags = "default",
                               format = c("long", "wide")) {
-  # TODO: add input checks
+  # NOTE: add input checks
   # NOTE: assume names taken from infection list
   # NOTE: dt must be a data.table for list-columns
 
