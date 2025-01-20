@@ -9,6 +9,7 @@
 #' draws from each distribution for the corresponding infection parameters.
 #' Arguments which vary by age are supported, with the drawn and scaled value
 #' treated as the median of the profile vector.
+#' See **Examples**.
 #'
 #' @param param_ranges An optional named list of two-element vectors, giving the
 #' ranges to which samples drawn using `param_distributions` should be rescaled.
@@ -16,16 +17,28 @@
 #' the Beta distribution).
 #' If passed, the list must have names corresponding to `param_distribution`
 #' names. When empty, the generated values are used without scaling.
+#' See **Examples**.
 #'
 #' @return A list of `<daedalus_infection>` objects.
 #' @export
-make_infection_samples <- function(name, samples = 100,
-                                   param_distributions = list(
-                                     r0 = distributional::dist_beta(2, 5)
-                                   ),
-                                   param_ranges = list(
-                                     r0 = c(1.0, 2.0)
-                                   )) {
+#'
+#' @examples
+#' # make 10 infection objects varying in R0, with a skewed distribution
+#' # scaled between 1.0 and 2.0
+#' make_infection_samples(
+#'   "influenza_2009",
+#'   samples = 3,
+#'   list(
+#'     r0 = distributional::dist_beta(2, 5)
+#'   ),
+#'   list(
+#'     r0 = c(0.1, 0.2)
+#'   )
+#' )
+make_infection_samples <- function(name,
+                                   param_distributions,
+                                   param_ranges = NULL,
+                                   samples = 100) {
   # check inputs
   checkmate::assert_subset(
     name, daedalus::epidemic_names,
@@ -33,24 +46,32 @@ make_infection_samples <- function(name, samples = 100,
   )
   checkmate::assert_count(samples, positive = TRUE)
 
-  # create default values for use
-  infection_default <- daedalus::daedalus_infection(name)
-
+  # check parameter distributions
+  checkmate::assert_list(
+    param_distributions, "distribution",
+    any.missing = FALSE
+  )
   param_names <- names(param_distributions)
   checkmate::assert_subset(
     param_names,
     daedalus::infection_parameter_names
   )
 
-  param_rescale_names <- names(param_ranges)
-  checkmate::assert_subset(param_rescale_names, param_names)
+  # check parameter rescale ranges
+  if (!is.null(param_ranges)) {
+    checkmate::assert_list(param_ranges, "numeric")
+    invisible(
+      lapply(
+        param_ranges, checkmate::assert_numeric,
+        lower = 0, finite = TRUE, any.missing = FALSE
+      )
+    )
+    param_rescale_names <- names(param_ranges)
+    checkmate::assert_subset(param_rescale_names, param_names)
+  }
 
-  checkmate::assert_list(
-    param_distributions, "distribution",
-    any.missing = FALSE
-  )
-  # TODO: more checks needed for range
-  checkmate::assert_list(param_ranges, "numeric")
+  # create default values for use
+  infection_default <- daedalus::daedalus_infection(name)
 
   # generate draws from distributions
   param_distributions_list <- Reduce(param_distributions, f = `c`)
@@ -82,7 +103,7 @@ make_infection_samples <- function(name, samples = 100,
   }
 
   # handle numeric vectors if any using profile of default and mean
-  # TODO: consider standardising as a function, see scales::rescale_mid()
+  # NOTE: consider standardising as a function, see scales::rescale_mid()
   if (any(param_names %in% NAMES_VECTOR_INF_PARAMS)) {
     # get subset of names provided
     vector_params <- intersect(param_names, NAMES_VECTOR_INF_PARAMS)
