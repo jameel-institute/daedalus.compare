@@ -145,7 +145,7 @@ run_scenarios <- function(country,
   # input checking
   checkmate::assert_multi_class(country, c("daedalus_country", "character"))
   if (is.character(country)) {
-    country <- daedalus_country(country)
+    country <- daedalus::daedalus_country(country)
   }
   checkmate::assert_multi_class(
     infection, c("daedalus_infection", "character", "list")
