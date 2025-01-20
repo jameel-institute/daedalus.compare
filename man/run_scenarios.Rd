@@ -6,7 +6,7 @@
 \usage{
 run_scenarios(
   country,
-  disease_x,
+  infection,
   response = c("none", "elimination"),
   response_time_start = 0,
   response_time_end = 0,
@@ -14,6 +14,27 @@ run_scenarios(
 )
 }
 \arguments{
+\item{country}{A country or territory object of class \verb{<daedalus_country>},
+\strong{or} a country or territory name from those included in the package;
+see \link[daedalus]{country_names}, \strong{or} a country ISO2 or ISO3 code; see
+\link[daedalus]{country_codes_iso2c} and \link[daedalus]{country_codes_iso3c} .
+Country-specific data such as the community and workplace contacts, the
+demography, and the distribution of the workforce into economic sectors is
+automatically accessed from package data for the relevant country name if it
+is passed as a string.
+To override package defaults for country characteristics, pass a
+\verb{<daedalus_country>} object instead. See \code{\link[daedalus:daedalus_country]{daedalus_country()}} for more.}
+
+\item{infection}{Similar to \code{\link[daedalus:daedalus]{daedalus()}}, may be a character vector from
+among \link[daedalus]{epidemic_names} or a \verb{<daedalus_infection>} object.
+May also be a list of \verb{<daedalus_infection>} objects.}
+
+\item{response_time_start}{A single number for the time at which the
+\code{response_strategy} comes into effect.}
+
+\item{response_time_end}{A single number of the time at which the response
+comes to an end.}
+
 \item{duration}{A vector of integer-ish numbers giving the durations over
 which to run scenarios. Each scenario is run for each duration.}
 }

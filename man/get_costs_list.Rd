@@ -4,18 +4,15 @@
 \alias{get_costs_list}
 \title{Get pandemic costs from a list of model outputs}
 \usage{
-get_costs_list(l, names, summarise_as = c("domain", "total"))
+get_costs_list(l, names)
 }
 \arguments{
 \item{l}{A list of \verb{<daedalus_output>} objects; each object will be passed to
 \code{daedalus::get_costs()}.}
 
 \item{names}{A character vector, intended to apply to elements of \code{l}.}
-
-\item{summarise_as}{A string specifying whether costs are split by domain.
-See \code{daedalus::get_costs()} for more information.}
 }
 \description{
-Get pandemic costs from a list of model outputs
+See \code{daedalus::get_costs()} for more information.
 }
 \keyword{internal}

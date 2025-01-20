@@ -6,33 +6,49 @@
 \usage{
 make_infection_samples(
   name,
-  samples = 100,
-  param_distributions = list(r0 = distributional::dist_beta(2, 5)),
-  param_ranges = list(r0 = c(1, 2))
+  param_distributions,
+  param_ranges = NULL,
+  samples = 100
 )
 }
 \arguments{
 \item{name}{An infection name from among \code{daedalus::epidemic_names}.}
-
-\item{samples}{The number of samples to generate.}
 
 \item{param_distributions}{A named list of \verb{<distribution>} class
 objects provided by \pkg{distributional}, with names corresponding to
 \code{daedalus::infection_parameter_names}. These are used to generate \code{samples}
 draws from each distribution for the corresponding infection parameters.
 Arguments which vary by age are supported, with the drawn and scaled value
-treated as the median of the profile vector.}
+treated as the median of the profile vector.
+See \strong{Examples}.}
 
 \item{param_ranges}{An optional named list of two-element vectors, giving the
 ranges to which samples drawn using \code{param_distributions} should be rescaled.
 This allows easy rescaling of values drawn from bounded distributions (e.g.
 the Beta distribution).
 If passed, the list must have names corresponding to \code{param_distribution}
-names. When empty, the generated values are used without scaling.}
+names. When empty, the generated values are used without scaling.
+See \strong{Examples}.}
+
+\item{samples}{The number of samples to generate.}
 }
 \value{
 A list of \verb{<daedalus_infection>} objects.
 }
 \description{
 Generate multiple infections with parameter distributions
+}
+\examples{
+# make 10 infection objects varying in R0, with a skewed distribution
+# scaled between 1.0 and 2.0
+make_infection_samples(
+  "influenza_2009",
+  samples = 3,
+  list(
+    r0 = distributional::dist_beta(2, 5)
+  ),
+  list(
+    r0 = c(0.1, 0.2)
+  )
+)
 }
