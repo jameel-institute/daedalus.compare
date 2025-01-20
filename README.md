@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# daedalus.compare: TAGLINE
+# daedalus.compare: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes
 
 <!-- badges: start -->
 
@@ -17,58 +17,128 @@ coverage](https://codecov.io/gh/jameel-institute/daedalus.compare/branch/main/gr
 status](https://www.r-pkg.org/badges/version/daedalus.compare)](https://CRAN.R-project.org/package=daedalus.compare)
 <!-- badges: end -->
 
-*daedalus.compare* is a template package and repository on which future
-Jameel Institute packages are based.
-
-To use this template, select *daedalus.compare* from the drop-down menu
-under **Repository template** when creating a new repository in the
-Jameel Institute organisation. Replace all instances of
-“daedalus.compare” with your package name. Make sure to also:
-
-1.  Edit the `DESCRIPTION` as appropriate with the correct package
-    information;
-
-2.  Edit the files in `R/`, `tests/`, and `vignettes/` to suit your
-    package;
-
-3.  Remove these instructions from `README.Rmd`, and re-render the `.md`
-    file using `devtools::render_readme()`.
+*daedalus.compare* is a helper package that wraps the *daedalus* package
+for epi-macroeconomic modelling, and is primarily focused on making it
+easy to run multiple scenarios of pandemic mitigation strategies along
+with uncertainty in infection parameters.
 
 ## Installation
 
-**NOTE:** Remove or comment out installation sources as appropriate.
-
-You can install the development version of daedalus.compare from the
-Jameel Institute R-universe with:
+You can install the development version of *daedalus.compare* from the
+Jameel Institute R-universe (recommended) or from GitHub.
 
 ``` r
 # installation from R-universe
-# install.packages(
-#   "daedalus.compare", 
-#   repos = c(
-#     "https://jameel-institute.r-universe.dev", "https://cloud.r-project.org"
-#   )
-# )
+install.packages(
+  "daedalus.compare", 
+  repos = c(
+    "https://jameel-institute.r-universe.dev", "https://cloud.r-project.org"
+  )
+)
+
+# installation from GitHub using {pak}
+install.packages("pak")
+pak::pak("jameel-institute/daedalus.compare")
 ```
 
-or from GitHub [GitHub](https://github.com/) with:
-
-``` r
-# install.packages("pak")
-# pak::pak("jameel-institute/daedalus.compare")
-```
+You can also install
 
 ## Quick start
 
-Add a simple example of using the package’s main feature(s) here, with a
-minimum amount of code. If preparatory or plotting steps are needed,
-prefer to hide them to keep focus on the package functionality.
+This example shows how to model multiple pandemic response scenarios in
+the U.K. with uncertainty in $R_0$ of an H1N1-like infection. **Note
+that** *daedalus.compare* only supports running
+`daedalus::daedalus_rtm()` using `daedalus.compare::run_scenarios()` at
+present.
+
+``` r
+library(daedalus.compare)
+#> Loading required package: daedalus
+
+# make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
+infection_list <- make_infection_samples(
+  "influenza_2009",
+  param_distributions = list(
+    r0 = distributional::dist_beta(2, 5)
+  ),
+  param_ranges = list(
+    r0 = c(1.0, 2.0)
+  ),
+  samples = 10
+)
+
+# run multiple scenarios of outputs
+output <- run_scenarios(
+  "GBR", infection_list,
+  response = list(none = "none", elimination = "elimination"),
+  response_time_start = 10,
+  response_time_end = 90
+)
+
+# view output which is a data.table
+output
+#>       response duration     output
+#>         <char>    <num>     <list>
+#> 1:        none      100 <list[10]>
+#> 2: elimination      100 <list[10]>
+
+# get epi-curve data
+disease_tags <- sprintf("sample_%i", seq_along(infection_list))
+epi_curves <- get_epicurve_data(output, disease_tags)
+```
+
+``` r
+# plot epi-curve data showing daily hospitalisations
+library(dplyr)
+#> 
+#> Attaching package: 'dplyr'
+#> The following objects are masked from 'package:stats':
+#> 
+#>     filter, lag
+#> The following objects are masked from 'package:base':
+#> 
+#>     intersect, setdiff, setequal, union
+library(ggplot2)
+
+epi_curves %>%
+  filter(measure == "daily_hospitalisations") %>%
+  ggplot(aes(time, value)) +
+  geom_line(
+    aes(col = response, group = interaction(tag, response))
+  ) +
+  labs(
+    x = "Time", y = "Daily hospitalisations",
+    col = "Mitigation strategy"
+  )
+```
+
+<img src="man/figures/README-unnamed-chunk-3-1.png" width="100%" />
 
 ## Related projects
 
-Add information and links to related projects, such as research papers
-or packages, here.
+*daedalus.compare* is intended to be a helper package for the
+macro-economic and epidemiological [modelling package
+*daedalus*](https://github.com/jameel-institute/daedalus), also
+developed at the Jameel Institute.
+
+The DAEDALUS model was originally developed in Haw et al.
+([2022](#ref-haw2022)), and the R implementation of the model is based
+on a [project on the economics of pandemic
+preparedness](https://github.com/robj411/p2_drivers).
 
 ## References
 
-Space for references: REMOVE this text.
+<div id="refs" class="references csl-bib-body hanging-indent"
+entry-spacing="0">
+
+<div id="ref-haw2022" class="csl-entry">
+
+Haw, David J., Giovanni Forchini, Patrick Doohan, Paula Christen, Matteo
+Pianella, Robert Johnson, Sumali Bajaj, et al. 2022. “Optimizing Social
+and Economic Activity While Containing SARS-CoV-2 Transmission Using
+DAEDALUS.” *Nature Computational Science* 2 (4): 223–33.
+<https://doi.org/10.1038/s43588-022-00233-0>.
+
+</div>
+
+</div>

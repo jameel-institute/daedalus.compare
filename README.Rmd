@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-# daedalus.compare: Run and compare DAEDALUS scenarios of pandemic health, educational, and economic costs
+# daedalus.compare: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes
 
 <!-- badges: start -->
 [![Project Status: Concept – Minimal or no implementation has been done yet, or the repository is only intended to be a limited example, demo, or proof-of-concept.](https://www.repostatus.org/badges/latest/concept.svg)](https://www.repostatus.org/#concept)
@@ -24,35 +24,80 @@ knitr::opts_chunk$set(
 [![CRAN status](https://www.r-pkg.org/badges/version/daedalus.compare)](https://CRAN.R-project.org/package=daedalus.compare)
 <!-- badges: end -->
 
-_daedalus.compare_ is ...
+_daedalus.compare_ is a helper package that wraps the _daedalus_ package for epi-macroeconomic modelling, and is primarily focused on making it easy to run multiple scenarios of pandemic mitigation strategies along with uncertainty in infection parameters.
 
 ## Installation
 
-**NOTE:** Remove or comment out installation sources as appropriate.
-
-You can install the development version of daedalus.compare from GitHub [GitHub](https://github.com/) with:
-
-``` r
-install.packages("pak")
-pak::pak("jameel-institute/daedalus.compare@develop")
-```
-<!-- 
-the Jameel Institute R-universe with:
+You can install the development version of _daedalus.compare_ from the Jameel Institute R-universe (recommended) or from GitHub.
  
 ```r
-installation from R-universe
+# installation from R-universe
 install.packages(
   "daedalus.compare", 
   repos = c(
     "https://jameel-institute.r-universe.dev", "https://cloud.r-project.org"
   )
 )
+
+# installation from GitHub using {pak}
+install.packages("pak")
+pak::pak("jameel-institute/daedalus.compare")
 ```
--->
+
+You can also install 
 
 ## Quick start
 
-WIP
+This example shows how to model multiple pandemic response scenarios in the U.K. with uncertainty in $R_0$ of an H1N1-like infection.
+**Note that** _daedalus.compare_ only supports running `daedalus::daedalus_rtm()` using `daedalus.compare::run_scenarios()` at present.
+
+```{r}
+library(daedalus.compare)
+
+# make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
+infection_list <- make_infection_samples(
+  "influenza_2009",
+  param_distributions = list(
+    r0 = distributional::dist_beta(2, 5)
+  ),
+  param_ranges = list(
+    r0 = c(1.0, 2.0)
+  ),
+  samples = 10
+)
+
+# run multiple scenarios of outputs
+output <- run_scenarios(
+  "GBR", infection_list,
+  response = list(none = "none", elimination = "elimination"),
+  response_time_start = 10,
+  response_time_end = 90
+)
+
+# view output which is a data.table
+output
+
+# get epi-curve data
+disease_tags <- sprintf("sample_%i", seq_along(infection_list))
+epi_curves <- get_epicurve_data(output, disease_tags)
+```
+
+```{r}
+# plot epi-curve data showing daily hospitalisations
+library(dplyr)
+library(ggplot2)
+
+epi_curves %>%
+  filter(measure == "daily_hospitalisations") %>%
+  ggplot(aes(time, value)) +
+  geom_line(
+    aes(col = response, group = interaction(tag, response))
+  ) +
+  labs(
+    x = "Time", y = "Daily hospitalisations",
+    col = "Mitigation strategy"
+  )
+```
 
 ## Related projects
 
