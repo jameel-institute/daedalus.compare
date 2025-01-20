@@ -1,25 +1,29 @@
 Package: daedalus.compare
-Title: Run and compare DAEDALUS scenarios of pandemic health, educational,
-    and economic costs.
-Version: 0.0.0.9000
+Title: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes
+Version: 0.0.1.9000
 Authors@R: c(
     person("Pratik", "Gupte", , "pratik.gupte@lshtm.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5294-7819")),
     person("Abdul Latif Jameel Institute for Disease and Emergency Analytics", role = "fnd"),
     person("Imperial College of Science, Technology and Medicine", role = c("cph", "fnd"))
   )
-Description: Your package description. It must end with a period (".") and
-    include relevant bibliographical references if applicable, using the
-    following format: Author et al. (2023) <doi:10.5281/zenodo.6619350>.
+Description: Run multiple pandemic scenarios using the daedalus package
+    and access epidemiological and economic outcomes.
 License: MIT + file LICENSE
+URL: https://github.com/jameel-institute/daedalus.compare
+BugReports: https://github.com/jameel-institute/daedalus.compare/issues
 Depends:
     daedalus
 Imports: 
     checkmate,
-    daedalus,
     data.table,
+    distributional,
+    purrr,
+    scales,
     stats
 Suggests: 
+    dplyr,
+    ggplot2,
     knitr,
     rmarkdown,
     spelling,
