@@ -4,9 +4,17 @@
 \name{daedalus.compare-package}
 \alias{daedalus.compare}
 \alias{daedalus.compare-package}
-\title{daedalus.compare: Run and compare DAEDALUS scenarios of pandemic health, educational, and economic costs.}
+\title{daedalus.compare: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes}
 \description{
-Your package description. It must end with a period (".") and include relevant bibliographical references if applicable, using the following format: Author et al. (2023) \doi{10.5281/zenodo.6619350}.
+Run multiple pandemic scenarios using the daedalus package and access epidemiological and economic outcomes.
+}
+\seealso{
+Useful links:
+\itemize{
+  \item \url{https://github.com/jameel-institute/daedalus.compare}
+  \item Report bugs at \url{https://github.com/jameel-institute/daedalus.compare/issues}
+}
+
 }
 \author{
 \strong{Maintainer}: Pratik Gupte \email{pratik.gupte@lshtm.ac.uk} (\href{https://orcid.org/0000-0001-5294-7819}{ORCID})
