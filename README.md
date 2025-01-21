@@ -53,9 +53,9 @@ present.
 
 ``` r
 library(daedalus.compare)
-#> Loading required package: daedalus
 
 # make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
+set.seed(1) # for reproducible results
 infection_list <- make_infection_samples(
   "influenza_2009",
   param_distributions = list(
