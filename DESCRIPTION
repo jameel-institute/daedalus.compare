@@ -1,6 +1,6 @@
 Package: daedalus.compare
 Title: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes
-Version: 0.0.1.9000
+Version: 0.0.1
 Authors@R: c(
     person("Pratik", "Gupte", , "pratik.gupte@lshtm.ac.uk", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-5294-7819")),
@@ -12,13 +12,15 @@ Description: Run multiple pandemic scenarios using the daedalus package
 License: MIT + file LICENSE
 URL: https://github.com/jameel-institute/daedalus.compare
 BugReports: https://github.com/jameel-institute/daedalus.compare/issues
-Depends:
-    daedalus
 Imports: 
     checkmate,
+    cli,
+    daedalus,
     data.table,
     distributional,
+    glue,
     purrr,
+    rlang,
     scales,
     stats
 Suggests: 
