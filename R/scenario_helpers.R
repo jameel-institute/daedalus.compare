@@ -132,13 +132,14 @@ get_econ_costs_list <- function(l) {
 #' Run multiple DAEDALUS scenarios
 #'
 #' @inheritParams daedalus::daedalus_rtm
+#'
 #' @param duration A vector of integer-ish numbers giving the durations over
 #' which to run scenarios. Each scenario is run for each duration.
 #'
 #' @export
 run_scenarios <- function(country,
                           infection,
-                          response = c("none", "elimination"),
+                          response_strategy = "none",
                           response_time_start = 0,
                           response_time_end = 0,
                           duration = 100) {
@@ -152,7 +153,7 @@ run_scenarios <- function(country,
   )
 
   checkmate::assert_multi_class(
-    response, c("character", "list")
+    response_strategy, c("character", "list")
   )
 
   # check simple args
@@ -171,10 +172,10 @@ run_scenarios <- function(country,
 
 
   # handle custom and pre-defined response scenarios
-  if (is.list(response)) {
-    resp_predef <- unlist(Filter(is.character, response))
+  if (is.list(response_strategy)) {
+    resp_predef <- unlist(Filter(is.character, response_strategy))
     checkmate::assert_subset(resp_predef, names(daedalus::closure_data))
-    custom_responses <- Filter(is.numeric, response)
+    custom_responses <- Filter(is.numeric, response_strategy)
     resp_names_custom <- names(custom_responses)
 
     if (is.null(resp_names_custom)) {
@@ -184,7 +185,7 @@ run_scenarios <- function(country,
     }
   }
   scenarios <- data.table::CJ(
-    response = response, duration = duration, sorted = FALSE
+    response = response_strategy, duration = duration, sorted = FALSE
   )
 
   # get range names from disease_x or synthetic names
@@ -208,7 +209,7 @@ run_scenarios <- function(country,
   )
 
   # replace raw response strings and numerics with names
-  if (is.list(response)) {
+  if (is.list(response_strategy)) {
     scenarios$response <- c(resp_predef, resp_names_custom)
   }
 
@@ -246,7 +247,7 @@ get_summary_data <- function(dt, disease_tags,
   # nolint start
   # prevent linting data.table syntax for column selection
   cols_to_keep <- setdiff(colnames(dt), "output")
-  dt <- dt[, ..cols_to_keep]
+  dt <- dt[, cols_to_keep, with = FALSE]
   # nolint end
 
   dt <- dt[, unlist(epi_summary, recursive = FALSE),

@@ -7,7 +7,7 @@
 run_scenarios(
   country,
   infection,
-  response = c("none", "elimination"),
+  response_strategy = "none",
   response_time_start = 0,
   response_time_end = 0,
   duration = 100
@@ -28,6 +28,12 @@ To override package defaults for country characteristics, pass a
 \item{infection}{Similar to \code{\link[daedalus:daedalus]{daedalus()}}, may be a character vector from
 among \link[daedalus]{epidemic_names} or a \verb{<daedalus_infection>} object.
 May also be a list of \verb{<daedalus_infection>} objects.}
+
+\item{response_strategy}{Either a string for the name of response strategy
+followed from among "none", "school_closures", "economic_closures", and
+"elimination", or a numeric vector of the same length as the number of
+economic sectors (45) giving the openness coefficient for each sector when
+closures are active.}
 
 \item{response_time_start}{A single number for the time at which the
 \code{response_strategy} comes into effect.}

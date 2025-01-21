@@ -9,13 +9,13 @@ test_that("Running multiple infection and response scenarios", {
   expect_no_condition(
     run_scenarios(
       "GBR", infection_list,
-      response = "none"
+      response_strategy = "none"
     )
   )
   # expect output is a data table with list columns
   output <- run_scenarios(
     "GBR", infection_list,
-    response = "none"
+    response_strategy = "none"
   )
   checkmate::expect_data_table(
     output
@@ -27,12 +27,12 @@ test_that("Running multiple infection and response scenarios", {
   expect_no_condition(
     run_scenarios(
       "GBR", infection_list,
-      response = responses
+      response_strategy = responses
     )
   )
   output <- run_scenarios(
     "GBR", infection_list,
-    response = responses
+    response_strategy = responses
   )
   checkmate::expect_data_table(
     output,
