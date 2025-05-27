@@ -4,9 +4,9 @@
 \name{daedalus.compare-package}
 \alias{daedalus.compare}
 \alias{daedalus.compare-package}
-\title{daedalus.compare: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes}
+\title{daedalus.compare: Run Multiple Scenarios of the Daedalus Model}
 \description{
-Run multiple pandemic scenarios using the daedalus package and access epidemiological and economic outcomes.
+Run multiple pandemic response scenarios using the daedalus package and access epidemiological and economic outcomes.
 }
 \seealso{
 Useful links:

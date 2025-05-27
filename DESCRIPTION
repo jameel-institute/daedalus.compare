@@ -1,5 +1,5 @@
 Package: daedalus.compare
-Title: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes
+Title: Run Multiple Scenarios of the Daedalus Model
 Version: 0.0.1
 Authors@R: c(
     person("Pratik", "Gupte", , "pratik.gupte@lshtm.ac.uk", role = c("aut", "cre"),
@@ -7,8 +7,8 @@ Authors@R: c(
     person("Abdul Latif Jameel Institute for Disease and Emergency Analytics", role = "fnd"),
     person("Imperial College of Science, Technology and Medicine", role = c("cph", "fnd"))
   )
-Description: Run multiple pandemic scenarios using the daedalus package
-    and access epidemiological and economic outcomes.
+Description: Run multiple pandemic response scenarios using the daedalus
+    package and access epidemiological and economic outcomes.
 License: MIT + file LICENSE
 URL: https://github.com/jameel-institute/daedalus.compare
 BugReports: https://github.com/jameel-institute/daedalus.compare/issues

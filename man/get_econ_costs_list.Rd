@@ -9,6 +9,9 @@ get_econ_costs_list(l)
 \arguments{
 \item{l}{A list of \verb{<daedalus.output>} objects.}
 }
+\value{
+A \verb{<data.table>}.
+}
 \description{
 Get details of economic costs from model outputs
 }

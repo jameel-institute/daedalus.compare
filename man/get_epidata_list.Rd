@@ -12,6 +12,9 @@ get_epidata_list(l, names)
 
 \item{names}{A character vector, intended to apply to elements of \code{l}.}
 }
+\value{
+A \verb{<data.table>}.
+}
 \description{
 Get incidence data from a list of model outputs
 }
