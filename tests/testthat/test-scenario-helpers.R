@@ -135,7 +135,6 @@ test_that("Get epi summary data", {
   )
   disease_tags <- sprintf("tag_%i", seq_along(infection_list))
 
-  # TODO: NOT WORKING
   expect_no_condition(
     get_summary_data(output, disease_tags)
   )

@@ -2,7 +2,7 @@
 % Please edit documentation in R/infection_helpers.R
 \name{make_infection_samples}
 \alias{make_infection_samples}
-\title{Generate multiple infections with parameter distributions}
+\title{Generate multiple \verb{<daedalus_infection>}s from parameter distributions}
 \usage{
 make_infection_samples(
   name,
@@ -36,7 +36,7 @@ See \strong{Examples}.}
 A list of \verb{<daedalus_infection>} objects.
 }
 \description{
-Generate multiple infections with parameter distributions
+Generate multiple \verb{<daedalus_infection>}s from parameter distributions
 }
 \examples{
 # make 10 infection objects varying in R0, with a skewed distribution

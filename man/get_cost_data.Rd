@@ -20,6 +20,8 @@ and "high" risk scenarios.}
 \value{
 A \verb{<data.frame>} summarising epidemic costs over the timeframe of the
 modelled epidemics.
+
+A \verb{<data.frame>} of the costs for each model scenario.
 }
 \description{
 Get cost data from DAEDALUS scenarios

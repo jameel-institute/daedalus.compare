@@ -12,6 +12,9 @@ get_costs_list(l, names)
 
 \item{names}{A character vector, intended to apply to elements of \code{l}.}
 }
+\value{
+A \verb{<data.table>}.
+}
 \description{
 See \code{daedalus::get_costs()} for more information.
 }

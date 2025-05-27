@@ -44,6 +44,9 @@ comes to an end.}
 \item{duration}{A vector of integer-ish numbers giving the durations over
 which to run scenarios. Each scenario is run for each duration.}
 }
+\value{
+A \verb{<data.table>}, potentially with data held in list-columns.
+}
 \description{
 Run multiple DAEDALUS scenarios
 }

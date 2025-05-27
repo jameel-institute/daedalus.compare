@@ -12,6 +12,9 @@ get_summary_list(l, names = c("lower", "mean", "upper"))
 
 \item{names}{A character vector, intended to apply to elements of \code{l}.}
 }
+\value{
+A \verb{<data.table>}.
+}
 \description{
 Get epidemic summary data from a list of model outputs
 }

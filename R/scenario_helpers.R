@@ -21,8 +21,10 @@ ci <- function(x, level = 95) {
 #'
 #' @param l A list of `<daedalus_output>` objects; each object will be passed to
 #' `daedalus::get_costs()`.
+#'
 #' @param names A character vector, intended to apply to elements of `l`.
 #'
+#' @return A `<data.table>`.
 #'
 #' @keywords internal
 get_costs_list <- function(l, names) {
@@ -30,30 +32,28 @@ get_costs_list <- function(l, names) {
   costs <- lapply(l, daedalus::get_costs, summarise_as = "domain")
 
   costs <- do.call(rbind, costs)
-  cost_df <- data.table::as.data.table(costs)
-  cost_df$tag <- names
+  cost_dt <- data.table::as.data.table(costs)
+  cost_dt$tag <- names
 
-  cost_df <- data.table::melt(
-    cost_df,
+  data.table::melt(
+    cost_dt,
     id.vars = "tag",
     variable.name = "domain",
     value.name = "cost"
   )
-
-  data.table::setDF(cost_df)
-
-  cost_df
 }
 
 #' Get epidemic summary data from a list of model outputs
 #'
 #' @inheritParams get_costs_list
 #'
+#' @return A `<data.table>`.
+#'
 #' @keywords internal
 get_summary_list <- function(l,
                              names = c("lower", "mean", "upper")) {
   # no input checks on internal functions
-  summary_data <- Map(
+  summary_dt <- Map(
     l, names,
     f = function(x, n) {
       df <- daedalus::get_epidemic_summary(x)
@@ -63,14 +63,14 @@ get_summary_list <- function(l,
     }
   )
 
-  dt <- data.table::rbindlist(summary_data)
-
-  data.table::setDF(dt)
+  data.table::rbindlist(summary_dt)
 }
 
 #' Get incidence data from a list of model outputs
 #'
 #' @inheritParams get_costs_list
+#'
+#' @return A `<data.table>`.
 #'
 #' @keywords internal
 get_epidata_list <- function(l, names) {
@@ -93,7 +93,7 @@ get_epidata_list <- function(l, names) {
     z
   })
 
-  dt_list <- Map(
+  hosp_dt <- Map(
     df_list, total_hosp_list, names,
     f = function(incidence_df, hosp_df, n) {
       dt <- data.table::rbindlist(
@@ -105,26 +105,22 @@ get_epidata_list <- function(l, names) {
     }
   )
 
-  dt <- data.table::rbindlist(dt_list)
-
-  dt
+  data.table::rbindlist(hosp_dt)
 }
 
 #' Get details of economic costs from model outputs
 #'
 #' @param l A list of `<daedalus.output>` objects.
 #'
+#' @return A `<data.table>`.
+#'
 #' @keywords internal
 get_econ_costs_list <- function(l) {
   # no input checks on internal functions
   econ_costs_list <- lapply(l, function(x) {
-    z <- daedalus::get_costs(x)
-    z[["economic_costs"]][
-      c("economic_cost_closures", "economic_cost_absences")
-    ]
+    z <- daedalus::get_costs(x)[["economic_costs"]]
+    as.data.frame(z[c("economic_cost_closures", "economic_cost_absences")])
   })
-
-  econ_costs_list <- lapply(econ_costs_list, as.data.frame)
 
   data.table::rbindlist(econ_costs_list)
 }
@@ -135,6 +131,8 @@ get_econ_costs_list <- function(l) {
 #'
 #' @param duration A vector of integer-ish numbers giving the durations over
 #' which to run scenarios. Each scenario is run for each duration.
+#'
+#' @return A `<data.table>`, potentially with data held in list-columns.
 #'
 #' @export
 run_scenarios <- function(country,
@@ -192,7 +190,11 @@ run_scenarios <- function(country,
   # assuming 4-digit list lengths
   disease_tags <- names(infection)
   if (is.null(disease_tags)) {
-    disease_tags <- sprintf("replicate_%04i", seq_along(infection))
+    disease_tags <- formatC(
+      seq_along(infection),
+      flag = "0",
+      width = floor(log10(length(infection))) + 1
+    )
   }
 
   scenarios$output <- Map(
@@ -220,8 +222,10 @@ run_scenarios <- function(country,
 #' Get summary data from DAEDALUS scenarios
 #'
 #' @param dt A `<data.table>` resulting from `run_scenarios()`.
+#'
 #' @param disease_tags A character vector giving names for replicates within
 #' each scenario.
+#'
 #' @param format A string for whether the data should be returned in `"long"` or
 #' `"wide"` format. Returning a 'wide' data.frame is only recommended when there
 #' is a small number of `disease_tags`, typically a triplet of "low", "medium",
@@ -278,6 +282,8 @@ get_summary_data <- function(dt, disease_tags,
 #'
 #' @return A `<data.frame>` summarising epidemic costs over the timeframe of the
 #' modelled epidemics.
+#'
+#' @return A `<data.frame>` of the costs for each model scenario.
 #'
 #' @export
 get_cost_data <- function(dt, disease_tags = "default",

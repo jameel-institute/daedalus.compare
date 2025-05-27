@@ -25,7 +25,6 @@ if (getRversion() >= "4.0.0") {
       libpaths    = .libPaths(),
       locale      = Sys.getlocale(),
       options     = options(),
-      par         = get_pars_toreset(),
       packages    = .packages(all.available = TRUE),
       sink        = sink.number(),
       timezone    = Sys.timezone(),

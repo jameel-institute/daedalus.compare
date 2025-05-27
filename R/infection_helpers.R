@@ -1,6 +1,7 @@
-#' Generate multiple infections with parameter distributions
+#' Generate multiple `<daedalus_infection>`s from parameter distributions
 #'
 #' @param name An infection name from among `daedalus::epidemic_names`.
+#'
 #' @param samples The number of samples to generate.
 #'
 #' @param param_distributions A named list of `<distribution>` class
@@ -20,6 +21,7 @@
 #' See **Examples**.
 #'
 #' @return A list of `<daedalus_infection>` objects.
+#'
 #' @export
 #'
 #' @examples
