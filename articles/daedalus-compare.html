@@ -5,16 +5,14 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Run Multiple Scenarios of the Daedalus Model • daedalus.compare</title>
-<script src="lightswitch.js"></script><script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/Inter-0.4.10/font.css" rel="stylesheet">
-<link href="deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
-<link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
-<script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Run Multiple Scenarios of the Daedalus Model">
-<meta name="description" content="Run multiple pandemic response scenarios using the daedalus package and access epidemiological and economic outcomes.">
-<meta property="og:description" content="Run multiple pandemic response scenarios using the daedalus package and access epidemiological and economic outcomes.">
+<title>ji-rpkg-template • daedalus.compare</title>
+<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="ji-rpkg-template">
 </head>
 <body>
     <a href="#main" class="visually-hidden-focusable">Skip to contents</a>
@@ -22,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top " aria-label="Site navigation"><div class="container">
     <a href="https://www.imperial.ac.uk/jameel-institute/" class="external-link"><img src="https://raw.githubusercontent.com/jameel-institute/jameelinst.rpkg.theme/refs/heads/main/inst/pkgdown/assets/logo_imperial_jameel.svg" id="logo" alt="Abdul Latif Jameel Institute for Disease and Emergency Analytics"></a>
-    <a class="navbar-brand me-2" href="index.html">daedalus.compare</a>
+    <a class="navbar-brand me-2" href="../index.html">daedalus.compare</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.1</small>
 
@@ -33,13 +31,13 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="articles/daedalus-compare.html">Get started</a></li>
-<li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
-<li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
+<li class="active nav-item"><a class="nav-link" href="../articles/daedalus-compare.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul>
 <ul class="navbar-nav">
 <li class="nav-item"><form class="form-inline" role="search">
- <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="search.json">
+ <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json">
 </form></li>
 <li class="nav-item"><a class="external-link nav-link" href="https://github.com/jameel-institute/daedalus.compare/" aria-label="GitHub"><span class="fa fab fa-github fa-lg"></span></a></li>
 <li class="nav-item dropdown">
@@ -55,42 +53,35 @@
 
 
   </div>
-</nav><div class="container template-home">
-<div class="row">
-  <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="daedaluscompare-run-multiple-daedalus-scenarios-of-pandemic-outcomes">daedalus.compare: Run Multiple DAEDALUS Scenarios of Pandemic Outcomes<a class="anchor" aria-label="anchor" href="#daedaluscompare-run-multiple-daedalus-scenarios-of-pandemic-outcomes"></a>
-</h1></div>
-<!-- badges: start -->
+</nav><div class="container template-article">
 
-<p><em>daedalus.compare</em> is a helper package that wraps the <em>daedalus</em> package for epi-macroeconomic modelling, and is primarily focused on making it easy to run multiple scenarios of pandemic mitigation strategies along with uncertainty in infection parameters.</p>
-<div class="section level2">
-<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h2>
-<p>You can install the development version of <em>daedalus.compare</em> from the Jameel Institute R-universe (recommended) or from GitHub.</p>
+
+
+
+<div class="row">
+  <main id="main" class="col-md-9"><div class="page-header">
+
+      <h1>ji-rpkg-template</h1>
+            
+      
+      <small class="dont-index">Source: <a href="https://github.com/jameel-institute/daedalus.compare/blob/main/vignettes/daedalus-compare.Rmd" class="external-link"><code>vignettes/daedalus-compare.Rmd</code></a></small>
+      <div class="d-none name"><code>daedalus-compare.Rmd</code></div>
+    </div>
+
+    
+    
+<p>This example shows how to model multiple pandemic response scenarios
+in the U.K. with uncertainty in
+<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mn>0</mn></msub><annotation encoding="application/x-tex">R_0</annotation></semantics></math>
+of an H1N1-like infection. <strong>Note that</strong>
+<em>daedalus.compare</em> only supports running
+<code><a href="https://jameel-institute.github.io/daedalus/reference/daedalus_rtm.html" class="external-link">daedalus::daedalus_rtm()</a></code> using
+<code><a href="../reference/run_scenarios.html">daedalus.compare::run_scenarios()</a></code> at present.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="co"># installation from R-universe</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span></span>
-<span>  <span class="st">"daedalus.compare"</span>, </span>
-<span>  repos <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>    <span class="st">"https://jameel-institute.r-universe.dev"</span>, <span class="st">"https://cloud.r-project.org"</span></span>
-<span>  <span class="op">)</span></span>
-<span><span class="op">)</span></span>
-<span></span>
-<span><span class="co"># installation from GitHub using {pak}</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"jameel-institute/daedalus.compare"</span><span class="op">)</span></span></code></pre></div>
-<p>You can also install</p>
-</div>
-<div class="section level2">
-<h2 id="quick-start">Quick start<a class="anchor" aria-label="anchor" href="#quick-start"></a>
-</h2>
-<p>This example shows how to model multiple pandemic response scenarios in the U.K. with uncertainty in <math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mn>0</mn></msub><annotation encoding="application/x-tex">R_0</annotation></semantics></math> of an H1N1-like infection. <strong>Note that</strong> <em>daedalus.compare</em> only supports running <code><a href="https://jameel-institute.github.io/daedalus/reference/daedalus_rtm.html" class="external-link">daedalus::daedalus_rtm()</a></code> using <code><a href="reference/run_scenarios.html">daedalus.compare::run_scenarios()</a></code> at present.</p>
-<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jameel-institute/daedalus.compare" class="external-link">daedalus.compare</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution</span></span>
-<span><span class="fu"><a href="https://rdrr.io/r/base/Random.html" class="external-link">set.seed</a></span><span class="op">(</span><span class="fl">1</span><span class="op">)</span> <span class="co"># for reproducible results</span></span>
-<span><span class="va">infection_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/make_infection_samples.html">make_infection_samples</a></span><span class="op">(</span></span>
+<span><span class="va">infection_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_infection_samples.html">make_infection_samples</a></span><span class="op">(</span></span>
 <span>  <span class="st">"influenza_2009"</span>,</span>
 <span>  param_distributions <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
 <span>    r0 <span class="op">=</span> <span class="fu">distributional</span><span class="fu">::</span><span class="fu"><a href="https://pkg.mitchelloharawild.com/distributional/reference/dist_beta.html" class="external-link">dist_beta</a></span><span class="op">(</span><span class="fl">2</span>, <span class="fl">5</span><span class="op">)</span></span>
@@ -102,7 +93,7 @@
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># run multiple scenarios of outputs</span></span>
-<span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/run_scenarios.html">run_scenarios</a></span><span class="op">(</span></span>
+<span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_scenarios.html">run_scenarios</a></span><span class="op">(</span></span>
 <span>  <span class="st">"GBR"</span>, <span class="va">infection_list</span>,</span>
 <span>  response <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>none <span class="op">=</span> <span class="st">"none"</span>, elimination <span class="op">=</span> <span class="st">"elimination"</span><span class="op">)</span>,</span>
 <span>  response_time_start <span class="op">=</span> <span class="fl">10</span>,</span>
@@ -118,8 +109,8 @@
 <span></span>
 <span><span class="co"># get epi-curve data</span></span>
 <span><span class="va">disease_tags</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"sample_%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">infection_list</span><span class="op">)</span><span class="op">)</span></span>
-<span><span class="va">epi_curves</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/get_epicurve_data.html">get_epicurve_data</a></span><span class="op">(</span><span class="va">output</span>, <span class="va">disease_tags</span><span class="op">)</span></span></code></pre></div>
-<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<span><span class="va">epi_curves</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/get_epicurve_data.html">get_epicurve_data</a></span><span class="op">(</span><span class="va">output</span>, <span class="va">disease_tags</span><span class="op">)</span></span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># plot epi-curve data showing daily hospitalisations</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span>
 <span><span class="co">#&gt; </span></span>
@@ -142,61 +133,10 @@
 <span>    x <span class="op">=</span> <span class="st">"Time"</span>, y <span class="op">=</span> <span class="st">"Daily hospitalisations"</span>,</span>
 <span>    col <span class="op">=</span> <span class="st">"Mitigation strategy"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="reference/figures/README-unnamed-chunk-3-1.png" width="100%"></p>
-</div>
-<div class="section level2">
-<h2 id="related-projects">Related projects<a class="anchor" aria-label="anchor" href="#related-projects"></a>
-</h2>
-<p><em>daedalus.compare</em> is intended to be a helper package for the macro-economic and epidemiological <a href="https://github.com/jameel-institute/daedalus" class="external-link">modelling package <em>daedalus</em></a>, also developed at the Jameel Institute.</p>
-<p>The DAEDALUS model was originally developed in Haw et al. (<a href="#ref-haw2022">2022</a>), and the R implementation of the model is based on a <a href="https://github.com/robj411/p2_drivers" class="external-link">project on the economics of pandemic preparedness</a>.</p>
-</div>
-<div class="section level2">
-<h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a>
-</h2>
-<div id="refs" class="references csl-bib-body hanging-indent" entry-spacing="0">
-<div id="ref-haw2022" class="csl-entry">
-Haw, David J., Giovanni Forchini, Patrick Doohan, Paula Christen, Matteo Pianella, Robert Johnson, Sumali Bajaj, et al. 2022. “Optimizing Social and Economic Activity While Containing SARS-CoV-2 Transmission Using DAEDALUS.” <em>Nature Computational Science</em> 2 (4): 223–33. <a href="https://doi.org/10.1038/s43588-022-00233-0" class="external-link uri">https://doi.org/10.1038/s43588-022-00233-0</a>.
-</div>
-</div>
-</div>
-</div>
-  </main><aside class="col-md-3"><div class="links">
-<h2 data-toc-skip>Links</h2>
-<ul class="list-unstyled">
-<li><a href="https://github.com/jameel-institute/daedalus.compare/" class="external-link">Browse source code</a></li>
-<li><a href="https://github.com/jameel-institute/daedalus.compare/issues" class="external-link">Report a bug</a></li>
-</ul>
+<p><img src="daedalus-compare_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
+  </main>
 </div>
 
-<div class="license">
-<h2 data-toc-skip>License</h2>
-<ul class="list-unstyled">
-<li><a href="LICENSE.html">Full license</a></li>
-<li><small><a href="https://opensource.org/licenses/mit-license.php" class="external-link">MIT</a> + file <a href="LICENSE-text.html">LICENSE</a></small></li>
-</ul>
-</div>
-
-
-<div class="citation">
-<h2 data-toc-skip>Citation</h2>
-<ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing daedalus.compare</a></li>
-</ul>
-</div>
-
-<div class="developers">
-<h2 data-toc-skip>Developers</h2>
-<ul class="list-unstyled">
-<li>Pratik Gupte <br><small class="roles"> Author, maintainer </small> <a href="https://orcid.org/0000-0001-5294-7819" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
-<li>Abdul Latif Jameel Institute for Disease and Emergency Analytics <br><small class="roles"> Funder </small>   </li>
-<li>Imperial College of Science, Technology and Medicine <br><small class="roles"> Copyright holder, funder </small>   </li>
-</ul>
-</div>
-
-
-
-  </aside>
-</div>
 
 
     <footer><div class="pkgdown-footer-left">
