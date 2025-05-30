@@ -12,12 +12,13 @@ make_infection_samples(
 )
 }
 \arguments{
-\item{name}{An infection name from among \code{daedalus::epidemic_names}.}
+\item{name}{An infection name from among \code{daedalus.data::epidemic_names}.}
 
 \item{param_distributions}{A named list of \verb{<distribution>} class
 objects provided by \pkg{distributional}, with names corresponding to
-\code{daedalus::infection_parameter_names}. These are used to generate \code{samples}
-draws from each distribution for the corresponding infection parameters.
+\code{daedalus.data::infection_parameter_names}.
+These are used to generate \code{samples} draws from each distribution for the
+corresponding infection parameters.
 Arguments which vary by age are supported, with the drawn and scaled value
 treated as the median of the profile vector.
 See \strong{Examples}.}

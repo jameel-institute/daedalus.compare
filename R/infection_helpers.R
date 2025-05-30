@@ -1,13 +1,14 @@
 #' Generate multiple `<daedalus_infection>`s from parameter distributions
 #'
-#' @param name An infection name from among `daedalus::epidemic_names`.
+#' @param name An infection name from among `daedalus.data::epidemic_names`.
 #'
 #' @param samples The number of samples to generate.
 #'
 #' @param param_distributions A named list of `<distribution>` class
 #' objects provided by \pkg{distributional}, with names corresponding to
-#' `daedalus::infection_parameter_names`. These are used to generate `samples`
-#' draws from each distribution for the corresponding infection parameters.
+#' `daedalus.data::infection_parameter_names`.
+#' These are used to generate `samples` draws from each distribution for the
+#' corresponding infection parameters.
 #' Arguments which vary by age are supported, with the drawn and scaled value
 #' treated as the median of the profile vector.
 #' See **Examples**.
@@ -43,7 +44,7 @@ make_infection_samples <- function(name,
                                    samples = 100) {
   # check inputs
   checkmate::assert_subset(
-    name, daedalus::epidemic_names,
+    name, daedalus.data::epidemic_names,
     empty.ok = FALSE
   )
   checkmate::assert_count(samples, positive = TRUE)
@@ -56,7 +57,7 @@ make_infection_samples <- function(name,
   param_names <- names(param_distributions)
   checkmate::assert_subset(
     param_names,
-    daedalus::infection_parameter_names
+    daedalus.data::infection_parameter_names
   )
 
   # check parameter rescale ranges
