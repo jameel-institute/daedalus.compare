@@ -71,8 +71,8 @@ infection_list <- make_infection_samples(
 output <- run_scenarios(
   "GBR", infection_list,
   response = list(none = "none", elimination = "elimination"),
-  response_time_start = 10,
-  response_time_end = 90
+  response_time = 10,
+  response_duration = 90
 )
 
 # view output which is a data.table

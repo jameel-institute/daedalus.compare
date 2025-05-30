@@ -1,3 +1,7 @@
+# daedalus.compare 0.0.2
+
+Updates for compatibility with _daedalus_ >= v0.2.16 which re-introduces list-infection inputs.
+
 # daedalus.compare 0.0.1
 
 This is the first version of _daedalus.compare_ and adds:
