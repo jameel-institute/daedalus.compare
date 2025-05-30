@@ -33,7 +33,7 @@ Suggests:
 VignetteBuilder: 
     knitr
 Remotes: 
-    jameel-institute/daedalus
+    jameel-institute/daedalus@jidea-275
 Config/Needs/website: jameel-institute/jameelinst.rpkg.theme
 Config/testthat/edition: 3
 Encoding: UTF-8
