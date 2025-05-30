@@ -8,16 +8,17 @@ run_scenarios(
   country,
   infection,
   response_strategy = "none",
-  response_time_start = 0,
-  response_time_end = 0,
-  duration = 100
+  response_time = 30,
+  response_duration = 365,
+  time_end = 100
 )
 }
 \arguments{
 \item{country}{A country or territory object of class \verb{<daedalus_country>},
 \strong{or} a country or territory name from those included in the package;
-see \link[daedalus]{country_names}, \strong{or} a country ISO2 or ISO3 code; see
-\link[daedalus]{country_codes_iso2c} and \link[daedalus]{country_codes_iso3c} .
+see \link[daedalus.data:country_names_codes]{daedalus.data::country_names}, \strong{or} a country ISO2 or ISO3 code; see
+\link[daedalus.data:country_names_codes]{daedalus.data::country_codes_iso2c} and
+\link[daedalus.data:country_names_codes]{daedalus.data::country_codes_iso3c}.
 Country-specific data such as the community and workplace contacts, the
 demography, and the distribution of the workforce into economic sectors is
 automatically accessed from package data for the relevant country name if it
@@ -25,24 +26,28 @@ is passed as a string.
 To override package defaults for country characteristics, pass a
 \verb{<daedalus_country>} object instead. See \code{\link[daedalus:daedalus_country]{daedalus_country()}} for more.}
 
-\item{infection}{Similar to \code{\link[daedalus:daedalus]{daedalus()}}, may be a character vector from
-among \link[daedalus]{epidemic_names} or a \verb{<daedalus_infection>} object.
-May also be a list of \verb{<daedalus_infection>} objects.}
+\item{infection}{A list of \verb{<daedalus_infection>} objects.}
 
-\item{response_strategy}{Either a string for the name of response strategy
-followed from among "none", "school_closures", "economic_closures", and
-"elimination", or a numeric vector of the same length as the number of
-economic sectors (45) giving the openness coefficient for each sector when
-closures are active.}
+\item{response_strategy}{A string for the name of response strategy followed;
+defaults to "none". The response strategy determines the country-specific
+response threshold following which the response is activated. See
+\code{response_threshold}.
 
-\item{response_time_start}{A single number for the time at which the
-\code{response_strategy} comes into effect.}
+While the response strategy is active, economic contacts are scaled using the
+package data object \code{daedalus.data::closure_data}.}
 
-\item{response_time_end}{A single number of the time at which the response
-comes to an end.}
+\item{response_time}{A single numeric value for the time in days
+at which the selected response is activated. This is ignored if the response
+has already been activated by the hospitalisation threshold being reached.
+Defaults to 30 days.}
 
-\item{duration}{A vector of integer-ish numbers giving the durations over
-which to run scenarios. Each scenario is run for each duration.}
+\item{response_duration}{A single integer-ish number that gives the number of
+days after \code{response_time} that an NPI should end.}
+
+\item{time_end}{A vector of integer-ish numbers giving the durations over
+which to run scenarios. Each scenario is run for each \code{time_end}. The
+intention is to be able to run response scenarios for different durations,
+to be able to generate a time-series of how different costs accumulate.}
 }
 \value{
 A \verb{<data.table>}, potentially with data held in list-columns.

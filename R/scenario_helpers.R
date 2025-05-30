@@ -127,10 +127,12 @@ get_econ_costs_list <- function(l) {
 
 #' Run multiple DAEDALUS scenarios
 #'
-#' @inheritParams daedalus::daedalus_rtm
+#' @inheritParams daedalus::daedalus_multi_infection
 #'
-#' @param duration A vector of integer-ish numbers giving the durations over
-#' which to run scenarios. Each scenario is run for each duration.
+#' @param time_end A vector of integer-ish numbers giving the durations over
+#' which to run scenarios. Each scenario is run for each `time_end`. The
+#' intention is to be able to run response scenarios for different durations,
+#' to be able to generate a time-series of how different costs accumulate.
 #'
 #' @return A `<data.table>`, potentially with data held in list-columns.
 #'
@@ -138,17 +140,12 @@ get_econ_costs_list <- function(l) {
 run_scenarios <- function(country,
                           infection,
                           response_strategy = "none",
-                          response_time_start = 0,
-                          response_time_end = 0,
-                          duration = 100) {
+                          response_time = 30,
+                          response_duration = 365,
+                          time_end = 100) {
   # input checking
-  checkmate::assert_multi_class(country, c("daedalus_country", "character"))
-  if (is.character(country)) {
-    country <- daedalus::daedalus_country(country)
-  }
-  checkmate::assert_multi_class(
-    infection, c("daedalus_infection", "character", "list")
-  )
+  country <- daedalus:::validate_country_input(country)
+  infection <- daedalus:::validate_infection_list_input(infection)
 
   checkmate::assert_multi_class(
     response_strategy, c("character", "list")
@@ -156,15 +153,11 @@ run_scenarios <- function(country,
 
   # check simple args
   checkmate::assert_number(
-    response_time_start,
-    lower = 0, finite = TRUE
-  )
-  checkmate::assert_number(
-    response_time_end,
-    lower = 0, finite = TRUE
+    response_time,
+    lower = 1, finite = TRUE, null.ok = TRUE
   )
   checkmate::assert_numeric(
-    duration,
+    response_duration,
     lower = 0, finite = TRUE
   )
 
@@ -172,7 +165,7 @@ run_scenarios <- function(country,
   # handle custom and pre-defined response scenarios
   if (is.list(response_strategy)) {
     resp_predef <- unlist(Filter(is.character, response_strategy))
-    checkmate::assert_subset(resp_predef, names(daedalus::closure_data))
+    checkmate::assert_subset(resp_predef, names(daedalus.data::closure_data))
     custom_responses <- Filter(is.numeric, response_strategy)
     resp_names_custom <- names(custom_responses)
 
@@ -183,7 +176,9 @@ run_scenarios <- function(country,
     }
   }
   scenarios <- data.table::CJ(
-    response = response_strategy, duration = duration, sorted = FALSE
+    response = response_strategy,
+    time_end = time_end,
+    sorted = FALSE
   )
 
   # get range names from disease_x or synthetic names
@@ -198,14 +193,14 @@ run_scenarios <- function(country,
   }
 
   scenarios$output <- Map(
-    scenarios$response, scenarios$duration,
-    f = function(resp, dur) {
-      daedalus::daedalus_rtm(
+    scenarios$response, scenarios$time_end,
+    f = function(resp, t_end) {
+      daedalus::daedalus_multi_infection(
         country, infection,
-        time_end = dur,
-        response_time_start = response_time_start,
-        response_time_end = response_time_end,
-        response_strategy = resp
+        response_time = response_time,
+        response_duration = response_duration,
+        response_strategy = resp,
+        time_end = t_end
       )
     }
   )
@@ -255,7 +250,7 @@ get_summary_data <- function(dt, disease_tags,
   # nolint end
 
   dt <- dt[, unlist(epi_summary, recursive = FALSE),
-    by = c("response", "duration")
+    by = c("response", "time_end")
   ]
 
   dt <- switch(format,
@@ -265,7 +260,7 @@ get_summary_data <- function(dt, disease_tags,
     wide = {
       data.table::dcast(
         dt,
-        response + duration + measure ~ tag,
+        response + time_end + measure ~ tag,
         value.var = "value"
       )
     }
@@ -300,7 +295,7 @@ get_cost_data <- function(dt, disease_tags = "default",
   dt$costs <- lapply(dt$output, get_costs_list, disease_tags)
 
   dt <- dt[, unlist(costs, recursive = FALSE),
-    by = c("response", "duration")
+    by = c("response", "time_end")
   ]
 
   dt <- switch(format,
@@ -310,7 +305,7 @@ get_cost_data <- function(dt, disease_tags = "default",
     wide = {
       data.table::dcast(
         dt,
-        response + domain + duration ~ tag,
+        response + domain + time_end ~ tag,
         value.var = "cost"
       )
     }
@@ -339,13 +334,13 @@ get_econ_cost_data <- function(dt) {
   dt$econ_costs <- lapply(dt$output, get_econ_costs_list)
 
   dt <- dt[, unlist(econ_costs, recursive = FALSE),
-    by = c("response", "duration")
+    by = c("response", "time_end")
   ]
 
   # switch to long format
   dt <- data.table::melt(
     dt,
-    id.vars = c("response", "duration"),
+    id.vars = c("response", "time_end"),
     value.name = "cost", variable.name = "cost_type"
   )
 
@@ -373,7 +368,7 @@ get_epicurve_data <- function(dt, disease_tags = "default",
   dt$epidata <- lapply(dt$output, get_epidata_list, names = disease_tags)
 
   dt <- dt[, unlist(epidata, recursive = FALSE),
-    by = c("response", "duration")
+    by = c("response", "time_end")
   ]
 
   dt <- switch(format,
@@ -381,7 +376,7 @@ get_epicurve_data <- function(dt, disease_tags = "default",
     wide = {
       data.table::dcast(
         dt,
-        time + response + measure + duration ~ tag,
+        time + response + measure + time_end ~ tag,
         value.var = "value"
       )
     }
