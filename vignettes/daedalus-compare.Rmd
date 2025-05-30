@@ -17,7 +17,7 @@ knitr::opts_chunk$set(
 ```
 
 This example shows how to model multiple pandemic response scenarios in the U.K. with uncertainty in $R_0$ of an H1N1-like infection.
-**Note that** _daedalus.compare_ only supports running `daedalus::daedalus_rtm()` using `daedalus.compare::run_scenarios()` at present.
+**Note that** _daedalus.compare_ only supports running `daedalus::daedalus_multi_infection()` using `daedalus.compare::run_scenarios()` at present.
 
 ```{r}
 library(daedalus.compare)
@@ -37,9 +37,9 @@ infection_list <- make_infection_samples(
 # run multiple scenarios of outputs
 output <- run_scenarios(
   "GBR", infection_list,
-  response = list(none = "none", elimination = "elimination"),
-  response_time_start = 10,
-  response_time_end = 90
+  response_strategy = list(none = "none", elimination = "elimination"),
+  response_time = 10,
+  response_duration = 80
 )
 
 # view output which is a data.table
