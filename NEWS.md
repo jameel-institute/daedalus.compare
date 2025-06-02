@@ -2,6 +2,8 @@
 
 Updates for compatibility with _daedalus_ >= v0.2.16 which re-introduces list-infection inputs.
 
+- Input checking in `run_scenarios()` removed to rely on errors bubbled up from _daedalus_ functions.
+
 # daedalus.compare 0.0.1
 
 This is the first version of _daedalus.compare_ and adds:
