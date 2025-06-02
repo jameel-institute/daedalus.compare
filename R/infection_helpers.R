@@ -38,20 +38,24 @@
 #'     r0 = c(0.1, 0.2)
 #'   )
 #' )
-make_infection_samples <- function(name,
-                                   param_distributions,
-                                   param_ranges = NULL,
-                                   samples = 100) {
+make_infection_samples <- function(
+  name,
+  param_distributions,
+  param_ranges = NULL,
+  samples = 100
+) {
   # check inputs
   checkmate::assert_subset(
-    name, daedalus.data::epidemic_names,
+    name,
+    daedalus.data::epidemic_names,
     empty.ok = FALSE
   )
   checkmate::assert_count(samples, positive = TRUE)
 
   # check parameter distributions
   checkmate::assert_list(
-    param_distributions, "distribution",
+    param_distributions,
+    "distribution",
     any.missing = FALSE
   )
   param_names <- names(param_distributions)
@@ -65,8 +69,11 @@ make_infection_samples <- function(name,
     checkmate::assert_list(param_ranges, "numeric")
     invisible(
       lapply(
-        param_ranges, checkmate::assert_numeric,
-        lower = 0, finite = TRUE, any.missing = FALSE
+        param_ranges,
+        checkmate::assert_numeric,
+        lower = 0,
+        finite = TRUE,
+        any.missing = FALSE
       )
     )
     param_rescale_names <- names(param_ranges)
@@ -85,14 +92,19 @@ make_infection_samples <- function(name,
   # NOTE: ORDER OF RANGE VECTOR MATTERS, reverse scaling possible
   if (length(param_ranges) > 0) {
     params_list[names(param_ranges)] <- Map(
-      params_list[names(param_ranges)], param_ranges,
+      params_list[names(param_ranges)],
+      param_ranges,
       f = scales::rescale
     )
   }
 
   are_good_params <- vapply(
-    params_list, checkmate::test_numeric, logical(1),
-    lower = 0, finite = TRUE, any.missing = FALSE
+    params_list,
+    checkmate::test_numeric,
+    logical(1),
+    lower = 0,
+    finite = TRUE,
+    any.missing = FALSE
   )
   no_negs_generated <- all(are_good_params)
   which_has_negs <- which(!are_good_params) # nolint lintr cannot parse glue xpr
@@ -111,7 +123,8 @@ make_infection_samples <- function(name,
     # get subset of names provided
     vector_params <- intersect(param_names, NAMES_VECTOR_INF_PARAMS)
     params_list[vector_params] <- lapply(
-      vector_params, function(x) {
+      vector_params,
+      function(x) {
         lapply(params_list[[x]], function(vl) {
           value_profile <- daedalus::get_data(infection_default, x)
           value_profile <- value_profile / mean(value_profile)
@@ -124,7 +137,8 @@ make_infection_samples <- function(name,
   params_list <- purrr::list_transpose(params_list)
 
   infection_list <- lapply(
-    params_list, function(pl) {
+    params_list,
+    function(pl) {
       do.call(
         daedalus::daedalus_infection,
         c(
