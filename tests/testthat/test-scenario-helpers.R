@@ -205,3 +205,99 @@ test_that("Get econ costs data", {
     get_econ_cost_data(output)
   )
 })
+
+test_that("Scenarios runner: errors and messages", {
+  # fails with single list infection
+  infection_list <- list(daedalus::daedalus_infection("sars_cov_1"))
+
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list
+    ),
+    "must be a list of >= 2"
+  )
+
+  # errors on country
+  expect_error(
+    run_scenarios(
+      "XYZ",
+      infection_list
+    ),
+    "`code` must be one of"
+  )
+  expect_error(
+    run_scenarios(
+      c("GBR", "CAN"),
+      infection_list
+    ),
+    "`code` must be one of"
+  )
+
+  infection_list <- list(
+    daedalus::daedalus_infection("sars_cov_1"),
+    daedalus::daedalus_infection("sars_cov_1")
+  )
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      "dummy_response"
+    ),
+    "Got an unexpected value for `response_strategy`"
+  )
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      c("elimination", "dummy")
+    ),
+    "Got an unexpected value for `response_strategy`"
+  )
+
+  # response time can be 0 if the strategy is 'none' or NULL
+  expect_no_condition(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      response_time = 0
+    )
+  )
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      "elimination",
+      response_time = 0
+    ),
+    "Expected `response_time` to be between 1 and 100"
+  )
+
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      response_strategy = "elimination",
+      response_duration = -1
+    ),
+    "(Expected)*(single positive integer-like)"
+  )
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      response_strategy = "elimination",
+      response_duration = c(100, 365)
+    ),
+    "(Expected)*(single positive integer-like)"
+  )
+
+  expect_error(
+    run_scenarios(
+      "GBR",
+      infection_list,
+      time_end = -1
+    ),
+    "Expected `time_end` to be a single positive integer-like"
+  )
+})
