@@ -16,6 +16,7 @@ Imports:
     checkmate,
     cli,
     daedalus,
+    daedalus.data,
     data.table,
     distributional,
     glue,
