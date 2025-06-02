@@ -137,30 +137,7 @@ get_econ_costs_list <- function(l) {
 #' @return A `<data.table>`, potentially with data held in list-columns.
 #'
 #' @export
-run_scenarios <- function(country,
-                          infection,
-                          response_strategy = "none",
-                          response_time = 30,
-                          response_duration = 365,
-                          time_end = 100) {
-  # input checking
-  country <- daedalus:::validate_country_input(country)
-  infection <- daedalus:::validate_infection_list_input(infection)
-
-  checkmate::assert_multi_class(
-    response_strategy, c("character", "list")
-  )
-
-  # check simple args
-  checkmate::assert_number(
-    response_time,
-    lower = 1, finite = TRUE, null.ok = TRUE
-  )
-  checkmate::assert_numeric(
-    response_duration,
-    lower = 0, finite = TRUE
-  )
-
+  # daedalus::daedalus_* should bubble up input errors
 
   # handle custom and pre-defined response scenarios
   if (is.list(response_strategy)) {
