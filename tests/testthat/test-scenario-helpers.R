@@ -8,13 +8,15 @@ test_that("Running multiple infection and response scenarios", {
 
   expect_no_condition(
     run_scenarios(
-      "GBR", infection_list,
+      "GBR",
+      infection_list,
       response_strategy = "none"
     )
   )
   # expect output is a data table with list columns
   output <- run_scenarios(
-    "GBR", infection_list,
+    "GBR",
+    infection_list,
     response_strategy = "none"
   )
   checkmate::expect_data_table(
@@ -26,12 +28,14 @@ test_that("Running multiple infection and response scenarios", {
   responses <- c("none", "elimination")
   expect_no_condition(
     run_scenarios(
-      "GBR", infection_list,
+      "GBR",
+      infection_list,
       response_strategy = responses
     )
   )
   output <- run_scenarios(
-    "GBR", infection_list,
+    "GBR",
+    infection_list,
     response_strategy = responses
   )
   checkmate::expect_data_table(
@@ -53,11 +57,15 @@ test_that("Running custom response scenarios", {
   # NOTE: daedalus_multi_infection only works on lists w/ len > 1
   expect_no_condition(
     run_scenarios(
-      "GBR", infection_list, list(custom = response)
+      "GBR",
+      infection_list,
+      list(custom = response)
     )
   )
   output <- run_scenarios(
-    "GBR", infection_list, list(custom = response)
+    "GBR",
+    infection_list,
+    list(custom = response)
   )
   checkmate::expect_data_table(
     output
@@ -67,24 +75,29 @@ test_that("Running custom response scenarios", {
   # this is because we no longer allow single infection use of
   # daedalus_multi_infection
   checkmate::expect_list(
-    output$output[[1]], "daedalus_output"
+    output$output[[1]],
+    "daedalus_output"
   )
 
   # multiple custom responses
   expect_no_condition(
     run_scenarios(
-      "GBR", infection_list,
+      "GBR",
+      infection_list,
       list(custom = response, custom2 = response)
     )
   )
   output <- run_scenarios(
-    "GBR", infection_list, list(response, response)
+    "GBR",
+    infection_list,
+    list(response, response)
   )
   checkmate::expect_data_table(
     output
   )
   checkmate::expect_list(
-    output$output[[1]], "daedalus_output"
+    output$output[[1]],
+    "daedalus_output"
   )
 
   # custom responses and multiple infections
@@ -95,7 +108,8 @@ test_that("Running custom response scenarios", {
   )
   expect_no_condition(
     run_scenarios(
-      "GBR", infection_list,
+      "GBR",
+      infection_list,
       list(custom = response, custom2 = response)
     )
   )
@@ -104,21 +118,25 @@ test_that("Running custom response scenarios", {
   # TODO: examine how names and openness coefficients are returned
   expect_no_condition(
     run_scenarios(
-      "GBR", infection_list, list(response, "elimination")
+      "GBR",
+      infection_list,
+      list(response, "elimination")
     )
   )
 })
 
 test_that("Get epi curve data", {
   infection_list <- make_infection_samples(
-    "influenza_2009", list(r0 = distributional::dist_beta(2, 5)),
+    "influenza_2009",
+    list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
   disease_tags <- sprintf("disease_%i", seq_along(infection_list))
   response <- rep(0.5, daedalus:::N_ECON_SECTORS)
 
   output <- run_scenarios(
-    "GBR", infection_list,
+    "GBR",
+    infection_list,
     list(custom = response, custom2 = response)
   )
 
@@ -135,13 +153,15 @@ test_that("Get epi curve data", {
 
 test_that("Get epi summary data", {
   infection_list <- make_infection_samples(
-    "influenza_2009", list(r0 = distributional::dist_beta(2, 5)),
+    "influenza_2009",
+    list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
   response <- rep(0.5, daedalus:::N_ECON_SECTORS)
 
   output <- run_scenarios(
-    "GBR", infection_list,
+    "GBR",
+    infection_list,
     list(custom = response, custom2 = response)
   )
   disease_tags <- sprintf("tag_%i", seq_along(infection_list))
@@ -160,13 +180,15 @@ test_that("Get epi summary data", {
 
 test_that("Get costs data", {
   infection_list <- make_infection_samples(
-    "influenza_2009", list(r0 = distributional::dist_beta(2, 5)),
+    "influenza_2009",
+    list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
   response <- rep(0.5, daedalus:::N_ECON_SECTORS)
 
   output <- run_scenarios(
-    "GBR", infection_list,
+    "GBR",
+    infection_list,
     list(custom = response, custom2 = response)
   )
   disease_tags <- sprintf("tag_%i", seq_along(infection_list))
@@ -186,13 +208,15 @@ test_that("Get costs data", {
 
 test_that("Get econ costs data", {
   infection_list <- make_infection_samples(
-    "influenza_2009", list(r0 = distributional::dist_beta(2, 5)),
+    "influenza_2009",
+    list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
   response <- rep(0.5, daedalus:::N_ECON_SECTORS)
 
   output <- run_scenarios(
-    "GBR", infection_list,
+    "GBR",
+    infection_list,
     list(custom = response, custom2 = response)
   )
   disease_tags <- sprintf("tag_%i", seq_along(infection_list))

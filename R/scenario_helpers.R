@@ -50,11 +50,11 @@ get_costs_list <- function(l, names) {
 #' @return A `<data.table>`.
 #'
 #' @keywords internal
-get_summary_list <- function(l,
-                             names = c("lower", "mean", "upper")) {
+get_summary_list <- function(l, names = c("lower", "mean", "upper")) {
   # no input checks on internal functions
   summary_dt <- Map(
-    l, names,
+    l,
+    names,
     f = function(x, n) {
       df <- daedalus::get_epidemic_summary(x)
       df$tag <- n
@@ -84,17 +84,16 @@ get_epidata_list <- function(l, names) {
     data.table::setDT(z)
 
     # NOTE: pass option of summarising by age group
-    z <- z[compartment == "hospitalised",
-      list(value = sum(value)),
-      by = "time"
-    ]
+    z <- z[compartment == "hospitalised", list(value = sum(value)), by = "time"]
     z$measure <- "total_hosp"
 
     z
   })
 
   hosp_dt <- Map(
-    df_list, total_hosp_list, names,
+    df_list,
+    total_hosp_list,
+    names,
     f = function(incidence_df, hosp_df, n) {
       dt <- data.table::rbindlist(
         list(incidence_df, hosp_df)
@@ -137,9 +136,18 @@ get_econ_costs_list <- function(l) {
 #' @return A `<data.table>`, potentially with data held in list-columns.
 #'
 #' @export
+run_scenarios <- function(
+  country,
+  infection,
+  response_strategy = "none",
+  response_time = 30,
+  response_duration = 365,
+  time_end = 100
+) {
   # daedalus::daedalus_* should bubble up input errors
 
   # handle custom and pre-defined response scenarios
+  # this function allows passing a list of responses
   if (is.list(response_strategy)) {
     resp_predef <- unlist(Filter(is.character, response_strategy))
     checkmate::assert_subset(resp_predef, names(daedalus.data::closure_data))
@@ -170,10 +178,12 @@ get_econ_costs_list <- function(l) {
   }
 
   scenarios$output <- Map(
-    scenarios$response, scenarios$time_end,
+    scenarios$response,
+    scenarios$time_end,
     f = function(resp, t_end) {
       daedalus::daedalus_multi_infection(
-        country, infection,
+        country,
+        infection,
         response_time = response_time,
         response_duration = response_duration,
         response_strategy = resp,
@@ -208,15 +218,16 @@ get_econ_costs_list <- function(l) {
 #' epidemics.
 #'
 #' @export
-get_summary_data <- function(dt, disease_tags,
-                             format = c("long", "wide")) {
+get_summary_data <- function(dt, disease_tags, format = c("long", "wide")) {
   # input checks
   checkmate::assert_data_table(dt, any.missing = FALSE)
   checkmate::assert_character(disease_tags)
 
   epi_summary <- NULL
   dt$epi_summary <- lapply(
-    dt$output, get_summary_list, disease_tags
+    dt$output,
+    get_summary_list,
+    disease_tags
   )
 
   format <- rlang::arg_match(format)
@@ -226,11 +237,13 @@ get_summary_data <- function(dt, disease_tags,
   dt <- dt[, cols_to_keep, with = FALSE]
   # nolint end
 
-  dt <- dt[, unlist(epi_summary, recursive = FALSE),
+  dt <- dt[,
+    unlist(epi_summary, recursive = FALSE),
     by = c("response", "time_end")
   ]
 
-  dt <- switch(format,
+  dt <- switch(
+    format,
     long = {
       dt
     },
@@ -258,8 +271,11 @@ get_summary_data <- function(dt, disease_tags,
 #' @return A `<data.frame>` of the costs for each model scenario.
 #'
 #' @export
-get_cost_data <- function(dt, disease_tags = "default",
-                          format = c("long", "wide")) {
+get_cost_data <- function(
+  dt,
+  disease_tags = "default",
+  format = c("long", "wide")
+) {
   # NOTE: add input checks
   checkmate::assert_data_table(dt)
   checkmate::assert_character(disease_tags)
@@ -271,11 +287,10 @@ get_cost_data <- function(dt, disease_tags = "default",
   costs <- NULL
   dt$costs <- lapply(dt$output, get_costs_list, disease_tags)
 
-  dt <- dt[, unlist(costs, recursive = FALSE),
-    by = c("response", "time_end")
-  ]
+  dt <- dt[, unlist(costs, recursive = FALSE), by = c("response", "time_end")]
 
-  dt <- switch(format,
+  dt <- switch(
+    format,
     long = {
       dt
     },
@@ -310,7 +325,8 @@ get_econ_cost_data <- function(dt) {
   econ_costs <- NULL
   dt$econ_costs <- lapply(dt$output, get_econ_costs_list)
 
-  dt <- dt[, unlist(econ_costs, recursive = FALSE),
+  dt <- dt[,
+    unlist(econ_costs, recursive = FALSE),
     by = c("response", "time_end")
   ]
 
@@ -318,7 +334,8 @@ get_econ_cost_data <- function(dt) {
   dt <- data.table::melt(
     dt,
     id.vars = c("response", "time_end"),
-    value.name = "cost", variable.name = "cost_type"
+    value.name = "cost",
+    variable.name = "cost_type"
   )
 
   data.table::setDF(dt)
@@ -334,8 +351,11 @@ get_econ_cost_data <- function(dt) {
 #' over the timeframe of the modelled epidemics.
 #'
 #' @export
-get_epicurve_data <- function(dt, disease_tags = "default",
-                              format = c("long", "wide")) {
+get_epicurve_data <- function(
+  dt,
+  disease_tags = "default",
+  format = c("long", "wide")
+) {
   # NOTE: add input checks
   # NOTE: assume names taken from infection list
   # NOTE: dt must be a data.table for list-columns
@@ -344,20 +364,15 @@ get_epicurve_data <- function(dt, disease_tags = "default",
   epidata <- NULL
   dt$epidata <- lapply(dt$output, get_epidata_list, names = disease_tags)
 
-  dt <- dt[, unlist(epidata, recursive = FALSE),
-    by = c("response", "time_end")
-  ]
+  dt <- dt[, unlist(epidata, recursive = FALSE), by = c("response", "time_end")]
 
-  dt <- switch(format,
-    long = dt,
-    wide = {
-      data.table::dcast(
-        dt,
-        time + response + measure + time_end ~ tag,
-        value.var = "value"
-      )
-    }
-  )
+  dt <- switch(format, long = dt, wide = {
+    data.table::dcast(
+      dt,
+      time + response + measure + time_end ~ tag,
+      value.var = "value"
+    )
+  })
 
   data.table::setDF(dt)
 

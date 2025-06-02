@@ -1,0 +1,6 @@
+[format]
+exclude = [
+    "tests/testthat/helper-state.R",
+    "tests/testthat/setup-options.R",
+    "tests/spelling.R"
+]

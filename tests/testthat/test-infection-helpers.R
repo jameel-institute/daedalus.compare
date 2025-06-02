@@ -2,17 +2,21 @@ test_that("Making infection samples works", {
   n_samples <- 10L
   expect_no_condition(
     make_infection_samples(
-      "influenza_2009", list(r0 = distributional::dist_beta(2, 5)),
+      "influenza_2009",
+      list(r0 = distributional::dist_beta(2, 5)),
       samples = n_samples
     )
   )
   samples <- make_infection_samples(
-    "influenza_2009", list(r0 = distributional::dist_beta(2, 5)),
+    "influenza_2009",
+    list(r0 = distributional::dist_beta(2, 5)),
     samples = n_samples
   )
   checkmate::expect_list(
-    samples, "daedalus_infection",
-    any.missing = FALSE, len = n_samples
+    samples,
+    "daedalus_infection",
+    any.missing = FALSE,
+    len = n_samples
   )
 
   # passing parameter distributions
