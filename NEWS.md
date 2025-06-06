@@ -1,3 +1,7 @@
+# daedalus.compare 0.0.3
+
+Restores ability to get epidemic summary disaggregated by age and other groups by passing arguments to `daedalus::get_epidemic_summary()` via `...` in `get_summary_data()`.
+
 # daedalus.compare 0.0.2
 
 Updates for compatibility with _daedalus_ >= v0.2.16 which re-introduces list-infection inputs.

@@ -190,6 +190,44 @@ test_that("Get epi summary data", {
       groups = "age_group"
     ),
   )
+
+  group_wanted <- "age_group"
+  measures_expected <- c("total_deaths", "epidemic_size") # different from args
+  summary_data <- get_summary_data(
+    output,
+    disease_tags,
+    "long",
+    measures = c("deaths", "infections"),
+    groups = group_wanted
+  )
+  expect_true(
+    group_wanted %in% colnames(summary_data)
+  )
+  expect_true(
+    all(measures_expected %in% summary_data$measure)
+  )
+
+  expect_error(
+    get_summary_data(
+      output,
+      disease_tags,
+      "long",
+      measures = c("deaths", "infections"),
+      groups = "dummy_group"
+    ),
+    "Expected `groups` to be either `NULL` or a character vector"
+  )
+
+  expect_error(
+    get_summary_data(
+      output,
+      disease_tags,
+      "long",
+      measures = "dummy_measure",
+      groups = "age_group"
+    ),
+    "`measures` must be one of"
+  )
 })
 
 test_that("Get costs data", {
