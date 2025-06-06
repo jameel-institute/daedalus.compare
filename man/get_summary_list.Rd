@@ -4,13 +4,15 @@
 \alias{get_summary_list}
 \title{Get epidemic summary data from a list of model outputs}
 \usage{
-get_summary_list(l, names = c("lower", "mean", "upper"))
+get_summary_list(l, names, ...)
 }
 \arguments{
 \item{l}{A list of \verb{<daedalus_output>} objects; each object will be passed to
 \code{daedalus::get_costs()}.}
 
 \item{names}{A character vector, intended to apply to elements of \code{l}.}
+
+\item{...}{Additional arguments passed to \code{\link[daedalus:epi_output_helpers]{daedalus::get_epidemic_summary()}}.}
 }
 \value{
 A \verb{<data.table>}.

@@ -4,7 +4,7 @@
 \alias{get_summary_data}
 \title{Get summary data from DAEDALUS scenarios}
 \usage{
-get_summary_data(dt, disease_tags, format = c("long", "wide"))
+get_summary_data(dt, disease_tags, format = c("long", "wide"), ...)
 }
 \arguments{
 \item{dt}{A \verb{<data.table>} resulting from \code{run_scenarios()}.}
@@ -16,6 +16,9 @@ each scenario.}
 \code{"wide"} format. Returning a 'wide' data.frame is only recommended when there
 is a small number of \code{disease_tags}, typically a triplet of "low", "medium",
 and "high" risk scenarios.}
+
+\item{...}{Additional arguments passed to \code{\link[daedalus:epi_output_helpers]{daedalus::get_epidemic_summary()}}.
+If passing \code{groups}, only \code{format = "long"} is supported.}
 }
 \value{
 A \verb{<data.frame>} summarising epidemiological outcomes: cumulative
