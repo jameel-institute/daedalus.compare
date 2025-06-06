@@ -7,7 +7,7 @@
     <a href="https://www.imperial.ac.uk/jameel-institute/" class="external-link"><img src="https://raw.githubusercontent.com/jameel-institute/jameelinst.rpkg.theme/refs/heads/main/inst/pkgdown/assets/logo_imperial_jameel.svg" id="logo" alt="Abdul Latif Jameel Institute for Disease and Emergency Analytics"></a>
     <a class="navbar-brand me-2" href="../index.html">daedalus.compare</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -40,15 +40,21 @@
     </div>
 
     <div class="section level2">
+<h2 class="pkg-version" data-toc-text="0.0.2" id="daedaluscompare-002">daedalus.compare 0.0.2<a class="anchor" aria-label="anchor" href="#daedaluscompare-002"></a></h2>
+<p>Updates for compatibility with <em>daedalus</em> &gt;= v0.2.16 which re-introduces list-infection inputs.</p>
+<ul><li>Input checking in <code><a href="../reference/run_scenarios.html">run_scenarios()</a></code> removed to rely on errors bubbled up from <em>daedalus</em> functions.</li>
+</ul></div>
+    <div class="section level2">
 <h2 class="pkg-version" data-toc-text="0.0.1" id="daedaluscompare-001">daedalus.compare 0.0.1<a class="anchor" aria-label="anchor" href="#daedaluscompare-001"></a></h2>
 <p>This is the first version of <em>daedalus.compare</em> and adds:</p>
-<ol style="list-style-type: decimal"><li><p>A scenario-runner function <code><a href="../reference/run_scenarios.html">run_scenarios()</a></code> that wraps around <code><a href="https://jameel-institute.github.io/daedalus/reference/daedalus_rtm.html" class="external-link">daedalus::daedalus_rtm()</a></code> and allows running multiple scenarios of pandemic mitigation responses with uncertainty in the infection parameters.</p></li>
+<ol style="list-style-type: decimal"><li><p>A scenario-runner function <code><a href="../reference/run_scenarios.html">run_scenarios()</a></code> that wraps around <code>daedalus::daedalus_rtm()</code> and allows running multiple scenarios of pandemic mitigation responses with uncertainty in the infection parameters.</p></li>
 <li><p>Multiple functions downstream of <code><a href="../reference/run_scenarios.html">run_scenarios()</a></code> that help get data from scenarios in formats suitable for plotting or summarisation: <code><a href="../reference/get_epicurve_data.html">get_epicurve_data()</a></code>, <code><a href="../reference/get_summary_data.html">get_summary_data()</a></code>, <code><a href="../reference/get_cost_data.html">get_cost_data()</a></code>, and <code><a href="../reference/get_econ_cost_data.html">get_econ_cost_data()</a></code>.</p></li>
 <li><p>Helper functions and constants: <code><a href="../reference/ci.html">ci()</a></code>, <code><a href="../reference/make_infection_samples.html">make_infection_samples()</a></code>, and <code>NAMES_VECTOR_INF_PARAMS</code>.</p></li>
 <li><p>Basic tests and function documentation.</p></li>
 </ol><ul><li>This project now includes a <a href="https://r-pkgs.org/other-markdown.html#sec-news" class="external-link"><code>NEWS.md</code></a> file to inform users about changes and new features.</li>
 </ul></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

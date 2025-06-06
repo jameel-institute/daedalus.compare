@@ -7,7 +7,7 @@
     <a href="https://www.imperial.ac.uk/jameel-institute/" class="external-link"><img src="https://raw.githubusercontent.com/jameel-institute/jameelinst.rpkg.theme/refs/heads/main/inst/pkgdown/assets/logo_imperial_jameel.svg" id="logo" alt="Abdul Latif Jameel Institute for Disease and Emergency Analytics"></a>
     <a class="navbar-brand me-2" href="../index.html">daedalus.compare</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.1</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -59,14 +59,15 @@
 
 
 <dl><dt id="arg-name">name<a class="anchor" aria-label="anchor" href="#arg-name"></a></dt>
-<dd><p>An infection name from among <code><a href="https://jameel-institute.github.io/daedalus/reference/epidemic_data.html" class="external-link">daedalus::epidemic_names</a></code>.</p></dd>
+<dd><p>An infection name from among <code><a href="https://rdrr.io/pkg/daedalus.data/man/epidemic_data.html" class="external-link">daedalus.data::epidemic_names</a></code>.</p></dd>
 
 
 <dt id="arg-param-distributions">param_distributions<a class="anchor" aria-label="anchor" href="#arg-param-distributions"></a></dt>
 <dd><p>A named list of <code>&lt;distribution&gt;</code> class
 objects provided by <span class="pkg">distributional</span>, with names corresponding to
-<code><a href="https://jameel-institute.github.io/daedalus/reference/epidemic_data.html" class="external-link">daedalus::infection_parameter_names</a></code>. These are used to generate <code>samples</code>
-draws from each distribution for the corresponding infection parameters.
+<code><a href="https://rdrr.io/pkg/daedalus.data/man/epidemic_data.html" class="external-link">daedalus.data::infection_parameter_names</a></code>.
+These are used to generate <code>samples</code> draws from each distribution for the
+corresponding infection parameters.
 Arguments which vary by age are supported, with the drawn and scaled value
 treated as the median of the profile vector.
 See <strong>Examples</strong>.</p></dd>
