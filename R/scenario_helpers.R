@@ -47,16 +47,18 @@ get_costs_list <- function(l, names) {
 #'
 #' @inheritParams get_costs_list
 #'
+#' @param ... Additional arguments passed to [daedalus::get_epidemic_summary()].
+#'
 #' @return A `<data.table>`.
 #'
 #' @keywords internal
-get_summary_list <- function(l, names = c("lower", "mean", "upper")) {
+get_summary_list <- function(l, names, ...) {
   # no input checks on internal functions
   summary_dt <- Map(
     l,
     names,
     f = function(x, n) {
-      df <- daedalus::get_epidemic_summary(x)
+      df <- daedalus::get_epidemic_summary(x, ...)
       df$tag <- n
 
       df
@@ -213,12 +215,20 @@ run_scenarios <- function(
 #' is a small number of `disease_tags`, typically a triplet of "low", "medium",
 #' and "high" risk scenarios.
 #'
+#' @param ... Additional arguments passed to [daedalus::get_epidemic_summary()].
+#' If passing `groups`, only `format = "long"` is supported.
+#'
 #' @return A `<data.frame>` summarising epidemiological outcomes: cumulative
 #' infections, deaths, and hospitalisations over the timeframe of the modelled
 #' epidemics.
 #'
 #' @export
-get_summary_data <- function(dt, disease_tags, format = c("long", "wide")) {
+get_summary_data <- function(
+  dt,
+  disease_tags,
+  format = c("long", "wide"),
+  ...
+) {
   # input checks
   checkmate::assert_data_table(dt, any.missing = FALSE)
   checkmate::assert_character(disease_tags)
@@ -227,7 +237,8 @@ get_summary_data <- function(dt, disease_tags, format = c("long", "wide")) {
   dt$epi_summary <- lapply(
     dt$output,
     get_summary_list,
-    disease_tags
+    disease_tags,
+    ...
   )
 
   format <- rlang::arg_match(format)

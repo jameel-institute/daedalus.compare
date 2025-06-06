@@ -176,6 +176,20 @@ test_that("Get epi summary data", {
   expect_no_condition(
     get_summary_data(output, disease_tags, "wide")
   )
+
+  expect_no_condition(
+    get_summary_data(output, disease_tags, "wide", measures = "deaths"),
+  )
+
+  expect_no_condition(
+    get_summary_data(
+      output,
+      disease_tags,
+      "long",
+      measures = c("deaths", "infections"),
+      groups = "age_group"
+    ),
+  )
 })
 
 test_that("Get costs data", {
