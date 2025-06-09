@@ -10,7 +10,8 @@ run_scenarios(
   response_strategy = "none",
   response_time = 30,
   response_duration = 365,
-  time_end = 100
+  time_end = 100,
+  initial_state_manual = NULL
 )
 }
 \arguments{
@@ -48,6 +49,11 @@ days after \code{response_time} that an NPI should end.}
 which to run scenarios. Each scenario is run for each \code{time_end}. The
 intention is to be able to run response scenarios for different durations,
 to be able to generate a time-series of how different costs accumulate.}
+
+\item{initial_state_manual}{An optional \strong{named} list with the names
+\code{p_infectious} and \code{p_asymptomatic} for the proportion of infectious and
+symptomatic individuals in each age group and economic sector.
+Defaults to \code{1e-6} and \code{0.0} respectively.}
 }
 \value{
 A \verb{<data.table>}, potentially with data held in list-columns.
