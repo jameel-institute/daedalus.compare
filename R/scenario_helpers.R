@@ -144,7 +144,8 @@ run_scenarios <- function(
   response_strategy = "none",
   response_time = 30,
   response_duration = 365,
-  time_end = 100
+  time_end = 100,
+  initial_state_manual = NULL
 ) {
   # daedalus::daedalus_* should bubble up input errors
 
@@ -189,7 +190,8 @@ run_scenarios <- function(
         response_time = response_time,
         response_duration = response_duration,
         response_strategy = resp,
-        time_end = t_end
+        time_end = t_end,
+        initial_state_manual = initial_state_manual
       )
     }
   )
