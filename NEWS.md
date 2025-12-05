@@ -1,3 +1,17 @@
+# daedalus.compare 0.0.4
+
+This patch version updates {daedalus.compare} to work with {daedalus} v0.3.0.
+
+## Breaking changes
+
+- `run_scenarios()` only accepts `<daedalus_npi>`, a list of `<daedalus_npi>` or `NULL` as inputs to argument `response_strategy()`; in addition, the NPIs must be time-limited and reactive NPIs are not allowed.
+
+## Other changes
+
+- Tests and documentation have been changed to reflect the change in accepted NPI input types.
+
+- A helper function to check that the NPI input is acceptable.
+
 # daedalus.compare 0.0.3
 
 Restores ability to get epidemic summary disaggregated by age and other groups by passing arguments to `daedalus::get_epidemic_summary()` via `...` in `get_summary_data()`.

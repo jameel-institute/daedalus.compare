@@ -14,3 +14,4 @@
 ^pkgdown$
 ^tools$
 ^air\.toml$
+^scratch\.R$
