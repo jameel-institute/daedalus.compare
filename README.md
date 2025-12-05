@@ -48,10 +48,11 @@ You can also install
 This example shows how to model multiple pandemic response scenarios in
 the U.K. with uncertainty in $R_0$ of an H1N1-like infection. **Note
 that** *daedalus.compare* only supports running
-`daedalus::daedalus_rtm()` using `daedalus.compare::run_scenarios()` at
-present.
+`daedalus::daedalus_multi_infection()` using
+`daedalus.compare::run_scenarios()` at present.
 
 ``` r
+library(daedalus)
 library(daedalus.compare)
 
 # make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
@@ -67,20 +68,31 @@ infection_list <- make_infection_samples(
   samples = 10
 )
 
+elimination <- daedalus_timed_npi(
+  start_time = 10,
+  end_time = 100,
+  openness = list(
+    daedalus.data::closure_strategy_data[["elimination"]]
+  ), # must be a list
+  "GBR" # must specify country
+)
+
 # run multiple scenarios of outputs
 output <- run_scenarios(
   "GBR", infection_list,
-  response = list(none = "none", elimination = "elimination"),
-  response_time = 10,
-  response_duration = 90
+  response = list(
+    none = NULL,
+    elimination = elimination
+  ),
+  time_end = 200
 )
 
 # view output which is a data.table
 output
 #>       response time_end     output
 #>         <char>    <num>     <list>
-#> 1:        none      100 <list[10]>
-#> 2: elimination      100 <list[10]>
+#> 1:        none      200 <list[10]>
+#> 2: elimination      200 <list[10]>
 
 # get epi-curve data
 disease_tags <- sprintf("sample_%i", seq_along(infection_list))
