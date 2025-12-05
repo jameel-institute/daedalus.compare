@@ -7,7 +7,7 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(daedalus.compare)
 library(checkmate)
+library(daedalus.compare)
 
 test_check("daedalus.compare")

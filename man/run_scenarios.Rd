@@ -7,9 +7,7 @@
 run_scenarios(
   country,
   infection,
-  response_strategy = "none",
-  response_time = 30,
-  response_duration = 365,
+  response_strategy = NULL,
   time_end = 100,
   initial_state_manual = NULL
 )
@@ -27,23 +25,17 @@ is passed as a string.
 To override package defaults for country characteristics, pass a
 \verb{<daedalus_country>} object instead. See \code{\link[daedalus:daedalus_country]{daedalus_country()}} for more.}
 
-\item{infection}{A list of \verb{<daedalus_infection>} objects.}
+\item{infection}{A list of \verb{<daedalus_infection>} objects. Must have a
+minimum length of 2.}
 
-\item{response_strategy}{A string for the name of response strategy followed;
-defaults to "none". The response strategy determines the country-specific
-response threshold following which the response is activated. See
-\code{response_threshold}.
-
-While the response strategy is active, economic contacts are scaled using the
-package data object \code{daedalus.data::closure_data}.}
-
-\item{response_time}{A single numeric value for the time in days
-at which the selected response is activated. This is ignored if the response
-has already been activated by the hospitalisation threshold being reached.
-Defaults to 30 days.}
-
-\item{response_duration}{A single integer-ish number that gives the number of
-days after \code{response_time} that an NPI should end.}
+\item{response_strategy}{A time-limited response strategy specified as a
+single \verb{<daedalus_npi>} created using \code{\link[daedalus:class_npi]{daedalus::daedalus_timed_npi()}},
+or a list of such objects, or \code{NULL} for no response. Lists may include
+\code{NULL}, which is useful when comparing response scenarios against the
+no-response counterfactual.
+If a list is passed, all elements must be named, or the list may have no
+names, in which case synthetic names will be assigned and a message printed
+to screen. Lists with some elements named and some unnamed are not accepted.}
 
 \item{time_end}{A vector of integer-ish numbers giving the durations over
 which to run scenarios. Each scenario is run for each \code{time_end}. The
@@ -51,12 +43,18 @@ intention is to be able to run response scenarios for different durations,
 to be able to generate a time-series of how different costs accumulate.}
 
 \item{initial_state_manual}{An optional \strong{named} list with the names
-\code{p_infectious} and \code{p_asymptomatic} for the proportion of infectious and
-symptomatic individuals in each age group and economic sector.
-Defaults to \code{1e-6} and \code{0.0} respectively.}
+\code{p_infectious}, \code{p_asymptomatic}, and \code{p_immune}.
+\code{p_infectious} and \code{p_asymptomatic} give the proportion of
+infectious and symptomatic individuals in each age group and economic sector.
+Defaults to \code{1e-6} and \code{0.0} respectively.
+\code{p_immune} may be a single number in the range \verb{0.0 <= p_immune <= 1.0} or a
+4-element vector in that range (the number of age groups in the model), for
+the proportion of individuals in the population or in each age group that
+have some pre-existing immunity to infection (reduced susceptibility). See
+\strong{Details} for more.}
 }
 \value{
-A \verb{<data.table>}, potentially with data held in list-columns.
+A \verb{<data.table>}, with data held in list-columns.
 }
 \description{
 Run multiple DAEDALUS scenarios
