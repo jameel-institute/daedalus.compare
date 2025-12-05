@@ -130,39 +130,83 @@ get_econ_costs_list <- function(l) {
 #'
 #' @inheritParams daedalus::daedalus_multi_infection
 #'
+#' @param response_strategy A time-limited response strategy specified as a
+#' single `<daedalus_npi>` created using [daedalus::daedalus_timed_npi()],
+#' or a list of such objects, or `NULL` for no response. Lists may include
+#' `NULL`, which is useful when comparing response scenarios against the
+#' no-response counterfactual.
+#' If a list is passed, all elements must be named, or the list may have no
+#' names, in which case synthetic names will be assigned and a message printed
+#' to screen. Lists with some elements named and some unnamed are not accepted.
+#'
 #' @param time_end A vector of integer-ish numbers giving the durations over
 #' which to run scenarios. Each scenario is run for each `time_end`. The
 #' intention is to be able to run response scenarios for different durations,
 #' to be able to generate a time-series of how different costs accumulate.
 #'
-#' @return A `<data.table>`, potentially with data held in list-columns.
+#' @return A `<data.table>`, with data held in list-columns.
 #'
 #' @export
 run_scenarios <- function(
   country,
   infection,
-  response_strategy = "none",
-  response_time = 30,
-  response_duration = 365,
+  response_strategy = NULL,
   time_end = 100,
   initial_state_manual = NULL
 ) {
   # daedalus::daedalus_* should bubble up input errors
 
-  # handle custom and pre-defined response scenarios
+  # handle response objects
   # this function allows passing a list of responses
-  if (is.list(response_strategy)) {
-    resp_predef <- unlist(Filter(is.character, response_strategy))
-    checkmate::assert_subset(resp_predef, names(daedalus.data::closure_data))
-    custom_responses <- Filter(is.numeric, response_strategy)
-    resp_names_custom <- names(custom_responses)
+  is_good_response <- checkmate::test_multi_class(
+    response_strategy,
+    c("list", "daedalus_npi"),
+    null.ok = TRUE
+  )
+  if (!is_good_response) {
+    cli::cli_abort(
+      "Got {.code response_strategy} of class \\
+      {.cls {class(response_strategy)}}, but only \\
+      {.cls daedalus_npi}, {.cls list}, or {.code NULL} are allowed."
+    )
+  }
 
-    if (is.null(resp_names_custom)) {
-      resp_names_custom <- glue::glue(
-        "custom_response_{seq_along(custom_responses)}"
+  # handle possible inputs and generate names
+  if (daedalus::is_daedalus_npi(response_strategy)) {
+    is_timed_npi <- response_strategy$identifier == "custom_timed"
+    if (!is_timed_npi) {
+      cli::cli_abort(
+        c(
+          "{.code x} is a {.cls daedalus_npi}, but it is \\
+          reactive to model state; expected a time-limited NPI!",
+          i = "Use {.fn daedalus::daedalus_timed_npi} to create a \\
+          timed-limited NPI."
+        )
       )
     }
+    response_strategy <- list(response_strategy)
+    response_names <- "custom_timed"
+  } else if (is.list(response_strategy)) {
+    response_strategy <- validate_npi_list_input(response_strategy)
+
+    has_good_names <- checkmate::test_named(response_strategy, "unique")
+    if (has_good_names) {
+      response_names <- names(response_strategy)
+    } else {
+      cli::cli_inform(
+        c(
+          "Got {.code response_strategy} as a list without names! Assigning \\
+          manually constructed names of the form {.code response_*}.",
+          i = "Assigning names to strategies helps with identifying scenarios!"
+        )
+      )
+      response_names <- sprintf("response_%i", seq_along(response_strategy))
+    }
+  } else {
+    response_strategy <- list(response_strategy)
+    response_names <- "none"
   }
+
   scenarios <- data.table::CJ(
     response = response_strategy,
     time_end = time_end,
@@ -187,8 +231,6 @@ run_scenarios <- function(
       daedalus::daedalus_multi_infection(
         country,
         infection,
-        response_time = response_time,
-        response_duration = response_duration,
         response_strategy = resp,
         time_end = t_end,
         initial_state_manual = initial_state_manual
@@ -197,9 +239,7 @@ run_scenarios <- function(
   )
 
   # replace raw response strings and numerics with names
-  if (is.list(response_strategy)) {
-    scenarios$response <- c(resp_predef, resp_names_custom)
-  }
+  scenarios$response <- response_names
 
   # returned as a `<data.table>` to allow list-columns
   scenarios
