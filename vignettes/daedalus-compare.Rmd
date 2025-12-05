@@ -20,6 +20,7 @@ This example shows how to model multiple pandemic response scenarios in the U.K.
 **Note that** _daedalus.compare_ only supports running `daedalus::daedalus_multi_infection()` using `daedalus.compare::run_scenarios()` at present.
 
 ```{r}
+library(daedalus) # needed only for custom NPIs
 library(daedalus.compare)
 
 # make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
@@ -34,12 +35,33 @@ infection_list <- make_infection_samples(
   samples = 10
 )
 
+# create a timed intervention based on the elimination strategy
+elimination <- daedalus_timed_npi(
+  start_time = 30,
+  end_time = 90,
+  openness = list(
+    daedalus.data::closure_strategy_data[["elimination"]]
+  ), # must be a list
+  "GBR" # must specify country
+)
+
+# create a custom timed intervention
+custom <- daedalus_timed_npi(
+  start_time = 30,
+  end_time = 60,
+  openness = list(rep(0.5, 45)), # must be a list
+  "GBR" # must specify country
+)
+
 # run multiple scenarios of outputs
 output <- run_scenarios(
   "GBR", infection_list,
-  response_strategy = list(none = "none", elimination = "elimination"),
-  response_time = 10,
-  response_duration = 80
+  response_strategy = list(
+    none = NULL,
+    elimination = elimination,
+    custom = custom
+  ),
+  time_end = 200
 )
 
 # view output which is a data.table
