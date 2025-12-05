@@ -1,5 +1,5 @@
 # test basic scenario runners
-test_that("Running multiple infection and response scenarios", {
+test_that("daedalus.compare: Basic usage of `run_scenarios()`", {
   infection_list <- make_infection_samples(
     "influenza_2009",
     list(r0 = distributional::dist_beta(2, 5)),
@@ -9,45 +9,32 @@ test_that("Running multiple infection and response scenarios", {
   expect_no_condition(
     run_scenarios(
       "GBR",
-      infection_list,
-      response_strategy = "none"
+      infection_list
     )
   )
+
   # expect output is a data table with list columns
   output <- run_scenarios(
     "GBR",
-    infection_list,
-    response_strategy = "none"
+    infection_list
   )
   checkmate::expect_data_table(
     output
   )
   checkmate::expect_list(output$output, "list")
-
-  # expect running scenarios works for multiple pre-defined responses
-  responses <- c("none", "elimination")
-  expect_no_condition(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      response_strategy = responses
-    )
-  )
-  output <- run_scenarios(
-    "GBR",
-    infection_list,
-    response_strategy = responses
-  )
-  checkmate::expect_data_table(
-    output,
-    nrows = length(responses)
-  )
-  checkmate::expect_list(output$output, "list")
 })
 
-test_that("Running custom response scenarios", {
+test_that("daedalus.compare: run multiple infections and responses", {
+  cty <- "GBR"
+
   # single custom response
-  response <- rep(0.5, daedalus:::N_ECON_SECTORS)
+  response <- daedalus::daedalus_timed_npi(
+    10,
+    20,
+    list(rep(0.5, daedalus:::N_ECON_SECTORS)),
+    cty
+  )
+
   infection_list <- make_infection_samples(
     "influenza_2009",
     list(r0 = distributional::dist_beta(2, 5)),
@@ -57,15 +44,15 @@ test_that("Running custom response scenarios", {
   # NOTE: daedalus_multi_infection only works on lists w/ len > 1
   expect_no_condition(
     run_scenarios(
-      "GBR",
+      cty,
       infection_list,
-      list(custom = response)
+      response
     )
   )
   output <- run_scenarios(
-    "GBR",
+    cty,
     infection_list,
-    list(custom = response)
+    response
   )
   checkmate::expect_data_table(
     output
@@ -82,13 +69,13 @@ test_that("Running custom response scenarios", {
   # multiple custom responses
   expect_no_condition(
     run_scenarios(
-      "GBR",
+      cty,
       infection_list,
       list(custom = response, custom2 = response)
     )
   )
   output <- run_scenarios(
-    "GBR",
+    cty,
     infection_list,
     list(response, response)
   )
@@ -99,43 +86,27 @@ test_that("Running custom response scenarios", {
     output$output[[1]],
     "daedalus_output"
   )
-
-  # custom responses and multiple infections
-  infection_list <- make_infection_samples(
-    "influenza_2009",
-    list(r0 = distributional::dist_beta(2, 5)),
-    samples = 10
-  )
-  expect_no_condition(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      list(custom = response, custom2 = response)
-    )
-  )
-
-  # custom and pre-defined responses
-  # TODO: examine how names and openness coefficients are returned
-  expect_no_condition(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      list(response, "elimination")
-    )
-  )
 })
 
-test_that("Get epi curve data", {
+test_that("Fn `get_epicurve_data()` works", {
   infection_list <- make_infection_samples(
     "influenza_2009",
     list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
   disease_tags <- sprintf("disease_%i", seq_along(infection_list))
-  response <- rep(0.5, daedalus:::N_ECON_SECTORS)
+
+  cty <- "GBR"
+  # single custom response
+  response <- daedalus::daedalus_timed_npi(
+    10,
+    20,
+    list(rep(0.5, daedalus:::N_ECON_SECTORS)),
+    cty
+  )
 
   output <- run_scenarios(
-    "GBR",
+    cty,
     infection_list,
     list(custom = response, custom2 = response)
   )
@@ -151,16 +122,24 @@ test_that("Get epi curve data", {
   )
 })
 
-test_that("Get epi summary data", {
+test_that("Fn `get_summary_data()` works", {
   infection_list <- make_infection_samples(
     "influenza_2009",
     list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
-  response <- rep(0.5, daedalus:::N_ECON_SECTORS)
+
+  cty <- "GBR"
+  # single custom response
+  response <- daedalus::daedalus_timed_npi(
+    10,
+    20,
+    list(rep(0.5, daedalus:::N_ECON_SECTORS)),
+    cty
+  )
 
   output <- run_scenarios(
-    "GBR",
+    cty,
     infection_list,
     list(custom = response, custom2 = response)
   )
@@ -200,11 +179,13 @@ test_that("Get epi summary data", {
     measures = c("deaths", "infections"),
     groups = group_wanted
   )
-  expect_true(
-    group_wanted %in% colnames(summary_data)
+  expect_subset(
+    group_wanted,
+    colnames(summary_data)
   )
-  expect_true(
-    all(measures_expected %in% summary_data$measure)
+  expect_subset(
+    measures_expected,
+    summary_data$measure
   )
 
   expect_error(
@@ -230,16 +211,24 @@ test_that("Get epi summary data", {
   )
 })
 
-test_that("Get costs data", {
+test_that("Fn `get_cost_data()` works", {
   infection_list <- make_infection_samples(
     "influenza_2009",
     list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
-  response <- rep(0.5, daedalus:::N_ECON_SECTORS)
+
+  cty <- "GBR"
+  # single custom response
+  response <- daedalus::daedalus_timed_npi(
+    10,
+    20,
+    list(rep(0.5, daedalus:::N_ECON_SECTORS)),
+    cty
+  )
 
   output <- run_scenarios(
-    "GBR",
+    cty,
     infection_list,
     list(custom = response, custom2 = response)
   )
@@ -258,16 +247,24 @@ test_that("Get costs data", {
   )
 })
 
-test_that("Get econ costs data", {
+test_that("Fn `get_econ_cost_data()` works", {
   infection_list <- make_infection_samples(
     "influenza_2009",
     list(r0 = distributional::dist_beta(2, 5)),
     samples = 10
   )
-  response <- rep(0.5, daedalus:::N_ECON_SECTORS)
+
+  cty <- "GBR"
+  # single custom response
+  response <- daedalus::daedalus_timed_npi(
+    10,
+    20,
+    list(rep(0.5, daedalus:::N_ECON_SECTORS)),
+    cty
+  )
 
   output <- run_scenarios(
-    "GBR",
+    cty,
     infection_list,
     list(custom = response, custom2 = response)
   )
@@ -320,60 +317,23 @@ test_that("Scenarios runner: errors and messages", {
       infection_list,
       "dummy_response"
     ),
-    "Got an unexpected value for `response_strategy`"
+    "(Got `response_strategy` of class)*(character)"
   )
   expect_error(
     run_scenarios(
       "GBR",
       infection_list,
-      c("elimination", "dummy")
+      list(
+        NULL,
+        daedalus::daedalus_timed_npi(
+          10,
+          20,
+          list(rep(0.5, 45)),
+          "GBR"
+        ),
+        "dummy"
+      )
     ),
-    "Got an unexpected value for `response_strategy`"
-  )
-
-  # response time can be 0 if the strategy is 'none' or NULL
-  expect_no_condition(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      response_time = 0
-    )
-  )
-  expect_error(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      "elimination",
-      response_time = 0
-    ),
-    "Expected `response_time` to be between 1 and 100"
-  )
-
-  expect_error(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      response_strategy = "elimination",
-      response_duration = -1
-    ),
-    "(Expected)*(single positive integer-like)"
-  )
-  expect_error(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      response_strategy = "elimination",
-      response_duration = c(100, 365)
-    ),
-    "(Expected)*(single positive integer-like)"
-  )
-
-  expect_error(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      time_end = -1
-    ),
-    "Expected `time_end` to be a single positive integer-like"
+    "(other)*(classes were found)"
   )
 })
