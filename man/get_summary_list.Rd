@@ -21,3 +21,4 @@ A \verb{<data.table>}.
 Get epidemic summary data from a list of model outputs
 }
 \keyword{internal}
+\keyword{output_helpers}

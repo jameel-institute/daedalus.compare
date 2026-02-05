@@ -28,3 +28,4 @@ epidemics.
 \description{
 Get summary data from DAEDALUS scenarios
 }
+\keyword{output_helpers}

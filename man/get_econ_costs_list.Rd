@@ -16,3 +16,4 @@ A \verb{<data.table>}.
 Get details of economic costs from model outputs
 }
 \keyword{internal}
+\keyword{output_helpers}

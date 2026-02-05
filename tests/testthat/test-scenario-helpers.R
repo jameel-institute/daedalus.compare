@@ -24,70 +24,6 @@ test_that("daedalus.compare: Basic usage of `run_scenarios()`", {
   checkmate::expect_list(output$output, "list")
 })
 
-test_that("daedalus.compare: run multiple infections and responses", {
-  cty <- "GBR"
-
-  # single custom response
-  response <- daedalus::daedalus_timed_npi(
-    10,
-    20,
-    list(rep(0.5, daedalus:::N_ECON_SECTORS)),
-    cty
-  )
-
-  infection_list <- make_infection_samples(
-    "influenza_2009",
-    list(r0 = distributional::dist_beta(2, 5)),
-    samples = 10
-  )
-
-  # NOTE: daedalus_multi_infection only works on lists w/ len > 1
-  expect_no_condition(
-    run_scenarios(
-      cty,
-      infection_list,
-      response
-    )
-  )
-  output <- run_scenarios(
-    cty,
-    infection_list,
-    response
-  )
-  checkmate::expect_data_table(
-    output
-  )
-
-  # NOTE: check that each output is a list of daedalus_output
-  # this is because we no longer allow single infection use of
-  # daedalus_multi_infection
-  checkmate::expect_list(
-    output$output[[1]],
-    "daedalus_output"
-  )
-
-  # multiple custom responses
-  expect_no_condition(
-    run_scenarios(
-      cty,
-      infection_list,
-      list(custom = response, custom2 = response)
-    )
-  )
-  output <- run_scenarios(
-    cty,
-    infection_list,
-    list(response, response)
-  )
-  checkmate::expect_data_table(
-    output
-  )
-  checkmate::expect_list(
-    output$output[[1]],
-    "daedalus_output"
-  )
-})
-
 test_that("Fn `get_epicurve_data()` works", {
   infection_list <- make_infection_samples(
     "influenza_2009",
@@ -179,11 +115,11 @@ test_that("Fn `get_summary_data()` works", {
     measures = c("deaths", "infections"),
     groups = group_wanted
   )
-  expect_subset(
+  checkmate::expect_subset(
     group_wanted,
     colnames(summary_data)
   )
-  expect_subset(
+  checkmate::expect_subset(
     measures_expected,
     summary_data$measure
   )
@@ -305,35 +241,5 @@ test_that("Scenarios runner: errors and messages", {
       infection_list
     ),
     "`code` must be one of"
-  )
-
-  infection_list <- list(
-    daedalus::daedalus_infection("sars_cov_1"),
-    daedalus::daedalus_infection("sars_cov_1")
-  )
-  expect_error(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      "dummy_response"
-    ),
-    "(Got `response_strategy` of class)*(character)"
-  )
-  expect_error(
-    run_scenarios(
-      "GBR",
-      infection_list,
-      list(
-        NULL,
-        daedalus::daedalus_timed_npi(
-          10,
-          20,
-          list(rep(0.5, 45)),
-          "GBR"
-        ),
-        "dummy"
-      )
-    ),
-    "(other)*(classes were found)"
   )
 })

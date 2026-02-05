@@ -19,3 +19,4 @@ A \verb{<data.table>}.
 Get incidence data from a list of model outputs
 }
 \keyword{internal}
+\keyword{output_helpers}

@@ -24,3 +24,4 @@ over the timeframe of the modelled epidemics.
 \description{
 Get epidemiological curves from model data
 }
+\keyword{output_helpers}

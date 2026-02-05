@@ -19,3 +19,4 @@ A \verb{<data.table>}.
 See \code{daedalus::get_costs()} for more information.
 }
 \keyword{internal}
+\keyword{output_helpers}

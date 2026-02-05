@@ -26,3 +26,4 @@ A \verb{<data.frame>} of the costs for each model scenario.
 \description{
 Get cost data from DAEDALUS scenarios
 }
+\keyword{output_helpers}
