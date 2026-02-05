@@ -1,6 +1,23 @@
-# NOTE: Update the `url` field as needed
-# e.g. "https://jameel-institute.github.io/daedalus/"
 url: https://jameel-institute.github.io/daedalus.compare/
 template:
   bootstrap: 5
   package: jameelinst.rpkg.theme
+
+reference:
+  - title: Run multiple scenarios
+    desc: Run multiple Daedalus scenarios.
+    contents:
+    - run_scenarios
+  - title: Output helper functions
+    desc: Get output for comparison from multiple scenarios' output.
+    contents:
+    - has_keyword("output_helpers")
+  - title: Miscellaneous helper functions
+    desc: Other helpful functions.
+    contents:
+    - ci
+    - make_infection_samples
+  - title: Package constants
+    desc: Commonly used constant values
+    contents:
+    - has_keyword("constants")
