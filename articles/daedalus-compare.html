@@ -6,7 +6,13 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>ji-rpkg-template • daedalus.compare</title>
-<script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<!-- mathjax math --><script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js" integrity="sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI=" crossorigin="anonymous"></script><script>
+  window.MathJax = {
+    chtml: {
+      fontURL: "https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/output/chtml/fonts/woff-v2"
+    }
+  };
+</script><script src="../lightswitch.js"></script><script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/Inter-0.4.10/font.css" rel="stylesheet">
 <link href="../deps/Source_Code_Pro-0.4.10/font.css" rel="stylesheet">
@@ -22,7 +28,7 @@
     <a href="https://www.imperial.ac.uk/jameel-institute/" class="external-link"><img src="https://raw.githubusercontent.com/jameel-institute/jameelinst.rpkg.theme/refs/heads/main/inst/pkgdown/assets/logo_imperial_jameel.svg" id="logo" alt="Abdul Latif Jameel Institute for Disease and Emergency Analytics"></a>
     <a class="navbar-brand me-2" href="../index.html">daedalus.compare</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.3</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -71,14 +77,14 @@
     
     
 <p>This example shows how to model multiple pandemic response scenarios
-in the U.K. with uncertainty in
-<math display="inline" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><msub><mi>R</mi><mn>0</mn></msub><annotation encoding="application/x-tex">R_0</annotation></semantics></math>
+in the U.K. with uncertainty in <span class="math inline">\(R_0\)</span>
 of an H1N1-like infection. <strong>Note that</strong>
 <em>daedalus.compare</em> only supports running
 <code><a href="https://jameel-institute.github.io/daedalus/reference/daedalus_multi_infection.html" class="external-link">daedalus::daedalus_multi_infection()</a></code> using
 <code><a href="../reference/run_scenarios.html">daedalus.compare::run_scenarios()</a></code> at present.</p>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jameel-institute/daedalus.compare" class="external-link">daedalus.compare</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jameel-institute/daedalus" class="external-link">daedalus</a></span><span class="op">)</span> <span class="co"># needed only for custom NPIs</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/jameel-institute/daedalus.compare" class="external-link">daedalus.compare</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution</span></span>
 <span><span class="va">infection_list</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/make_infection_samples.html">make_infection_samples</a></span><span class="op">(</span></span>
@@ -92,20 +98,42 @@ of an H1N1-like infection. <strong>Note that</strong>
 <span>  samples <span class="op">=</span> <span class="fl">10</span></span>
 <span><span class="op">)</span></span>
 <span></span>
+<span><span class="co"># create a timed intervention based on the elimination strategy</span></span>
+<span><span class="va">elimination</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://jameel-institute.github.io/daedalus/reference/class_npi.html" class="external-link">daedalus_timed_npi</a></span><span class="op">(</span></span>
+<span>  start_time <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="fl">90</span>,</span>
+<span>  openness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    <span class="fu">daedalus.data</span><span class="fu">::</span><span class="va"><a href="https://jameel-institute.github.io/daedalus.data/reference/closure_strategies.html" class="external-link">closure_strategy_data</a></span><span class="op">[[</span><span class="st">"elimination"</span><span class="op">]</span><span class="op">]</span></span>
+<span>  <span class="op">)</span>, <span class="co"># must be a list</span></span>
+<span>  <span class="st">"GBR"</span> <span class="co"># must specify country</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># create a custom timed intervention</span></span>
+<span><span class="va">custom</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://jameel-institute.github.io/daedalus/reference/class_npi.html" class="external-link">daedalus_timed_npi</a></span><span class="op">(</span></span>
+<span>  start_time <span class="op">=</span> <span class="fl">30</span>,</span>
+<span>  end_time <span class="op">=</span> <span class="fl">60</span>,</span>
+<span>  openness <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/rep.html" class="external-link">rep</a></span><span class="op">(</span><span class="fl">0.5</span>, <span class="fl">45</span><span class="op">)</span><span class="op">)</span>, <span class="co"># must be a list</span></span>
+<span>  <span class="st">"GBR"</span> <span class="co"># must specify country</span></span>
+<span><span class="op">)</span></span>
+<span></span>
 <span><span class="co"># run multiple scenarios of outputs</span></span>
 <span><span class="va">output</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/run_scenarios.html">run_scenarios</a></span><span class="op">(</span></span>
 <span>  <span class="st">"GBR"</span>, <span class="va">infection_list</span>,</span>
-<span>  response_strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>none <span class="op">=</span> <span class="st">"none"</span>, elimination <span class="op">=</span> <span class="st">"elimination"</span><span class="op">)</span>,</span>
-<span>  response_time <span class="op">=</span> <span class="fl">10</span>,</span>
-<span>  response_duration <span class="op">=</span> <span class="fl">80</span></span>
+<span>  response_strategy <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
+<span>    none <span class="op">=</span> <span class="cn">NULL</span>,</span>
+<span>    elimination <span class="op">=</span> <span class="va">elimination</span>,</span>
+<span>    custom <span class="op">=</span> <span class="va">custom</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  time_end <span class="op">=</span> <span class="fl">200</span></span>
 <span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># view output which is a data.table</span></span>
 <span><span class="va">output</span></span>
 <span><span class="co">#&gt;       response time_end     output</span></span>
 <span><span class="co">#&gt;         &lt;char&gt;    &lt;num&gt;     &lt;list&gt;</span></span>
-<span><span class="co">#&gt; 1:        none      100 &lt;list[10]&gt;</span></span>
-<span><span class="co">#&gt; 2: elimination      100 &lt;list[10]&gt;</span></span>
+<span><span class="co">#&gt; 1:        none      200 &lt;list[10]&gt;</span></span>
+<span><span class="co">#&gt; 2: elimination      200 &lt;list[10]&gt;</span></span>
+<span><span class="co">#&gt; 3:      custom      200 &lt;list[10]&gt;</span></span>
 <span></span>
 <span><span class="co"># get epi-curve data</span></span>
 <span><span class="va">disease_tags</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/sprintf.html" class="external-link">sprintf</a></span><span class="op">(</span><span class="st">"sample_%i"</span>, <span class="fu"><a href="https://rdrr.io/r/base/seq.html" class="external-link">seq_along</a></span><span class="op">(</span><span class="va">infection_list</span><span class="op">)</span><span class="op">)</span></span>
@@ -133,7 +161,7 @@ of an H1N1-like infection. <strong>Note that</strong>
 <span>    x <span class="op">=</span> <span class="st">"Time"</span>, y <span class="op">=</span> <span class="st">"Daily hospitalisations"</span>,</span>
 <span>    col <span class="op">=</span> <span class="st">"Mitigation strategy"</span></span>
 <span>  <span class="op">)</span></span></code></pre></div>
-<p><img src="daedalus-compare_files/figure-html/unnamed-chunk-3-1.png" width="768"></p>
+<p><img src="daedalus-compare_files/figure-html/unnamed-chunk-3-1.png" class="r-plt" alt="" width="768"></p>
   </main>
 </div>
 
@@ -144,7 +172,7 @@ of an H1N1-like infection. <strong>Note that</strong>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>
