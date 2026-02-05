@@ -1,8 +1,8 @@
 ---
-title: "ji-rpkg-template"
+title: "Getting started with multi-scenario modelling and outcome comparisons"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{ji-rpkg-template}
+  %\VignetteIndexEntry{Getting started with multi-scenario modelling and outcome comparisons}
   %\VignetteEncoding{UTF-8}
   %\VignetteEngine{knitr::rmarkdown}
 editor_options: 
@@ -24,6 +24,7 @@ library(daedalus) # needed only for custom NPIs
 library(daedalus.compare)
 
 # make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
+set.seed(1)
 infection_list <- make_infection_samples(
   "influenza_2009",
   param_distributions = list(
