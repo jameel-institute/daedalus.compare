@@ -26,7 +26,7 @@ ci <- function(x, level = 95) {
 #'
 #' @return A `<data.table>`.
 #'
-#' @keywords internal
+#' @keywords internal output_helpers
 get_costs_list <- function(l, names) {
   # no input checks on internal functions
   costs <- lapply(l, daedalus::get_costs, summarise_as = "domain")
@@ -51,7 +51,7 @@ get_costs_list <- function(l, names) {
 #'
 #' @return A `<data.table>`.
 #'
-#' @keywords internal
+#' @keywords internal output_helpers
 get_summary_list <- function(l, names, ...) {
   # no input checks on internal functions
   summary_dt <- Map(
@@ -74,7 +74,7 @@ get_summary_list <- function(l, names, ...) {
 #'
 #' @return A `<data.table>`.
 #'
-#' @keywords internal
+#' @keywords internal output_helpers
 get_epidata_list <- function(l, names) {
   # no input checks on internal functions
   compartment <- NULL
@@ -115,7 +115,7 @@ get_epidata_list <- function(l, names) {
 #'
 #' @return A `<data.table>`.
 #'
-#' @keywords internal
+#' @keywords internal output_helpers
 get_econ_costs_list <- function(l) {
   # no input checks on internal functions
   econ_costs_list <- lapply(l, function(x) {
@@ -139,6 +139,15 @@ get_econ_costs_list <- function(l) {
 #' names, in which case synthetic names will be assigned and a message printed
 #' to screen. Lists with some elements named and some unnamed are not accepted.
 #'
+#' @param vaccination_strategy A vaccination strategy specified as a
+#' single `<daedalus_vaccination>` created using
+#' [daedalus::daedalus_vaccination()], or a list of such objects, or `NULL`
+#' for no response. Lists may include `NULL`, which is useful when comparing
+#' vaccination scenarios against the no-vaccination counterfactual.
+#' If a list is passed, all elements must be named, or the list may have no
+#' names, in which case synthetic names will be assigned and a message printed
+#' to screen. Lists with some elements named and some unnamed are not accepted.
+#'
 #' @param time_end A vector of integer-ish numbers giving the durations over
 #' which to run scenarios. Each scenario is run for each `time_end`. The
 #' intention is to be able to run response scenarios for different durations,
@@ -151,6 +160,7 @@ run_scenarios <- function(
   country,
   infection,
   response_strategy = NULL,
+  vaccination_strategy = NULL,
   time_end = 100,
   initial_state_manual = NULL
 ) {
@@ -207,8 +217,62 @@ run_scenarios <- function(
     response_names <- "none"
   }
 
+  # handle vaccination objects
+  # this function allows passing a list of vaccinations
+  is_good_vax <- checkmate::test_multi_class(
+    vaccination_strategy,
+    c("list", "daedalus_vaccination"),
+    null.ok = TRUE
+  )
+  if (!is_good_vax) {
+    cli::cli_abort(
+      "Got {.code vaccination_strategy} of class \\
+      {.cls {class(vaccination_strategy)}}, but only \\
+      {.cls daedalus_vaccination}, {.cls list}, or {.code NULL} are allowed."
+    )
+  }
+
+  # handle possible inputs and generate names
+  if (daedalus::is_daedalus_vaccination(vaccination_strategy)) {
+    vaccination_strategy <- list(vaccination_strategy)
+    vaccination_names <- "custom_vaccination"
+  } else if (is.list(vaccination_strategy)) {
+    vaccination_strategy <- validate_vax_list_input(vaccination_strategy)
+
+    has_good_names <- checkmate::test_named(vaccination_strategy, "unique")
+    if (has_good_names) {
+      vaccination_names <- names(vaccination_strategy)
+    } else {
+      cli::cli_inform(
+        c(
+          "Got {.code vaccination_strategy} as a list without names! \\
+          Assigning manually constructed names of the form \\
+          {.code vaccination_*}.",
+          i = "Assigning names to vaccination strategies helps with \\
+          identifying scenarios!"
+        )
+      )
+      vaccination_names <- sprintf(
+        "vaccination_%i",
+        seq_along(vaccination_strategy)
+      )
+    }
+  } else {
+    vaccination_strategy <- list(vaccination_strategy)
+    vaccination_names <- "none"
+  }
+
   scenarios <- data.table::CJ(
     response = response_strategy,
+    vaccination = vaccination_strategy,
+    time_end = time_end,
+    sorted = FALSE
+  )
+
+  # get name combinations grid
+  scenario_names <- data.table::CJ(
+    response = response_names,
+    vaccination = vaccination_names,
     time_end = time_end,
     sorted = FALSE
   )
@@ -226,12 +290,14 @@ run_scenarios <- function(
 
   scenarios$output <- Map(
     scenarios$response,
+    scenarios$vaccination,
     scenarios$time_end,
-    f = function(resp, t_end) {
+    f = function(resp, vaccination, t_end) {
       daedalus::daedalus_multi_infection(
         country,
         infection,
         response_strategy = resp,
+        vaccine_investment = vaccination,
         time_end = t_end,
         initial_state_manual = initial_state_manual
       )
@@ -239,7 +305,9 @@ run_scenarios <- function(
   )
 
   # replace raw response strings and numerics with names
-  scenarios$response <- response_names
+  # and apply a conversion to character vector from list
+  scenarios$response <- scenario_names$response
+  scenarios$vaccination <- scenario_names$vaccination
 
   # returned as a `<data.table>` to allow list-columns
   scenarios
@@ -263,6 +331,8 @@ run_scenarios <- function(
 #' @return A `<data.frame>` summarising epidemiological outcomes: cumulative
 #' infections, deaths, and hospitalisations over the timeframe of the modelled
 #' epidemics.
+#'
+#' @keywords output_helpers
 #'
 #' @export
 get_summary_data <- function(
@@ -292,7 +362,7 @@ get_summary_data <- function(
 
   dt <- dt[,
     unlist(epi_summary, recursive = FALSE),
-    by = c("response", "time_end")
+    by = c("response", "vaccination", "time_end")
   ]
 
   dt <- switch(
@@ -323,6 +393,8 @@ get_summary_data <- function(
 #'
 #' @return A `<data.frame>` of the costs for each model scenario.
 #'
+#' @keywords output_helpers
+#'
 #' @export
 get_cost_data <- function(
   dt,
@@ -340,7 +412,10 @@ get_cost_data <- function(
   costs <- NULL
   dt$costs <- lapply(dt$output, get_costs_list, disease_tags)
 
-  dt <- dt[, unlist(costs, recursive = FALSE), by = c("response", "time_end")]
+  dt <- dt[,
+    unlist(costs, recursive = FALSE),
+    by = c("response", "vaccination", "time_end")
+  ]
 
   dt <- switch(
     format,
@@ -350,7 +425,7 @@ get_cost_data <- function(
     wide = {
       data.table::dcast(
         dt,
-        response + domain + time_end ~ tag,
+        response + vaccination + domain + time_end ~ tag,
         value.var = "cost"
       )
     }
@@ -369,6 +444,8 @@ get_cost_data <- function(
 #' modelled epidemics, broken down into costs due to restrictions and illness-
 #' related absences.
 #'
+#' @keywords output_helpers
+#'
 #' @export
 get_econ_cost_data <- function(dt) {
   # NOTE: add input checks
@@ -380,13 +457,13 @@ get_econ_cost_data <- function(dt) {
 
   dt <- dt[,
     unlist(econ_costs, recursive = FALSE),
-    by = c("response", "time_end")
+    by = c("response", "vaccination", "time_end")
   ]
 
   # switch to long format
   dt <- data.table::melt(
     dt,
-    id.vars = c("response", "time_end"),
+    id.vars = c("response", "vaccination", "time_end"),
     value.name = "cost",
     variable.name = "cost_type"
   )
@@ -403,6 +480,8 @@ get_econ_cost_data <- function(dt) {
 #' @return A `<data.frame>` of individuals in each epidemiological compartments
 #' over the timeframe of the modelled epidemics.
 #'
+#' @keywords output_helpers
+#'
 #' @export
 get_epicurve_data <- function(
   dt,
@@ -417,12 +496,15 @@ get_epicurve_data <- function(
   epidata <- NULL
   dt$epidata <- lapply(dt$output, get_epidata_list, names = disease_tags)
 
-  dt <- dt[, unlist(epidata, recursive = FALSE), by = c("response", "time_end")]
+  dt <- dt[,
+    unlist(epidata, recursive = FALSE),
+    by = c("response", "vaccination", "time_end")
+  ]
 
   dt <- switch(format, long = dt, wide = {
     data.table::dcast(
       dt,
-      time + response + measure + time_end ~ tag,
+      time + response + vaccination + measure + time_end ~ tag,
       value.var = "value"
     )
   })
