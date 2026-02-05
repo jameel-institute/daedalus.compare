@@ -17,3 +17,4 @@ related absences.
 \description{
 Get economic cost details from an output data.table
 }
+\keyword{output_helpers}

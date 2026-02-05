@@ -13,4 +13,4 @@ NAMES_VECTOR_INF_PARAMS
 \description{
 Names of age-varying infection parameters
 }
-\keyword{datasets}
+\keyword{constants}

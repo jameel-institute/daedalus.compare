@@ -8,6 +8,7 @@ run_scenarios(
   country,
   infection,
   response_strategy = NULL,
+  vaccination_strategy = NULL,
   time_end = 100,
   initial_state_manual = NULL
 )
@@ -33,6 +34,15 @@ single \verb{<daedalus_npi>} created using \code{\link[daedalus:class_npi]{daeda
 or a list of such objects, or \code{NULL} for no response. Lists may include
 \code{NULL}, which is useful when comparing response scenarios against the
 no-response counterfactual.
+If a list is passed, all elements must be named, or the list may have no
+names, in which case synthetic names will be assigned and a message printed
+to screen. Lists with some elements named and some unnamed are not accepted.}
+
+\item{vaccination_strategy}{A vaccination strategy specified as a
+single \verb{<daedalus_vaccination>} created using
+\code{\link[daedalus:class_vaccination]{daedalus::daedalus_vaccination()}}, or a list of such objects, or \code{NULL}
+for no response. Lists may include \code{NULL}, which is useful when comparing
+vaccination scenarios against the no-vaccination counterfactual.
 If a list is passed, all elements must be named, or the list may have no
 names, in which case synthetic names will be assigned and a message printed
 to screen. Lists with some elements named and some unnamed are not accepted.}
