@@ -65,7 +65,7 @@ make_infection_samples(
 #> [[1]]
 #> <daedalus_infection>
 #> • Epidemic name: influenza_2009
-#> • R0: 0.2
+#> • R0: 0.119453588227766
 #> • sigma: 0.909
 #> • p_sigma: 0.669
 #> • epsilon: 0.58
@@ -80,7 +80,7 @@ make_infection_samples(
 #> [[2]]
 #> <daedalus_infection>
 #> • Epidemic name: influenza_2009
-#> • R0: 0.1
+#> • R0: 0.2
 #> • sigma: 0.909
 #> • p_sigma: 0.669
 #> • epsilon: 0.58
@@ -95,7 +95,7 @@ make_infection_samples(
 #> [[3]]
 #> <daedalus_infection>
 #> • Epidemic name: influenza_2009
-#> • R0: 0.182723943621094
+#> • R0: 0.1
 #> • sigma: 0.909
 #> • p_sigma: 0.669
 #> • epsilon: 0.58

@@ -9,6 +9,7 @@ run_scenarios(
   country,
   infection,
   response_strategy = NULL,
+  vaccination_strategy = NULL,
   time_end = 100,
   initial_state_manual = NULL
 )
@@ -47,6 +48,18 @@ run_scenarios(
   or a list of such objects, or `NULL` for no response. Lists may
   include `NULL`, which is useful when comparing response scenarios
   against the no-response counterfactual. If a list is passed, all
+  elements must be named, or the list may have no names, in which case
+  synthetic names will be assigned and a message printed to screen.
+  Lists with some elements named and some unnamed are not accepted.
+
+- vaccination_strategy:
+
+  A vaccination strategy specified as a single `<daedalus_vaccination>`
+  created using
+  [`daedalus::daedalus_vaccination()`](https://jameel-institute.github.io/daedalus/reference/class_vaccination.html),
+  or a list of such objects, or `NULL` for no response. Lists may
+  include `NULL`, which is useful when comparing vaccination scenarios
+  against the no-vaccination counterfactual. If a list is passed, all
   elements must be named, or the list may have no names, in which case
   synthetic names will be assigned and a message printed to screen.
   Lists with some elements named and some unnamed are not accepted.

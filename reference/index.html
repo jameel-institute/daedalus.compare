@@ -13,7 +13,7 @@
     <a href="https://www.imperial.ac.uk/jameel-institute/" class="external-link"><img src="https://raw.githubusercontent.com/jameel-institute/jameelinst.rpkg.theme/refs/heads/main/inst/pkgdown/assets/logo_imperial_jameel.svg" id="logo" alt="Abdul Latif Jameel Institute for Disease and Emergency Analytics"></a>
     <a class="navbar-brand me-2" href="../index.html">daedalus.compare</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.4</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Released version">0.0.5</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -23,6 +23,10 @@
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto"><li class="nav-item"><a class="nav-link" href="../articles/daedalus-compare.html">Get started</a></li>
 <li class="active nav-item"><a class="nav-link" href="../reference/index.html">Reference</a></li>
+<li class="nav-item dropdown">
+  <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
+  <ul class="dropdown-menu" aria-labelledby="dropdown-articles"><li><a class="dropdown-item" href="../articles/comparing_vaccination.html">Comparing outcomes across vaccination strategies</a></li>
+  </ul></li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
       </ul><ul class="navbar-nav"><li class="nav-item"><form class="form-inline" role="search">
  <input class="form-control" type="search" name="search-input" id="search-input" autocomplete="off" aria-label="Search site" placeholder="Search for" data-search-index="../search.json"></form></li>
@@ -45,9 +49,113 @@
     </div>
 
     <div class="section level2">
-      <h2 id="all-functions">All functions<a class="anchor" aria-label="anchor" href="#all-functions"></a></h2>
+      <h2 id="run-multiple-scenarios">Run multiple scenarios<a class="anchor" aria-label="anchor" href="#run-multiple-scenarios"></a></h2>
+
+      <div class="section-desc"><p>Run multiple Daedalus scenarios.</p></div>
+
+      <dl></dl></div><div class="section level2">
 
 
+
+
+      <dl><dt>
+
+          <code><a href="run_scenarios.html">run_scenarios()</a></code>
+
+        </dt>
+        <dd>Run multiple DAEDALUS scenarios</dd>
+      </dl></div><div class="section level2">
+      <h2 id="output-helper-functions">Output helper functions<a class="anchor" aria-label="anchor" href="#output-helper-functions"></a></h2>
+
+      <div class="section-desc"><p>Get output for comparison from multiple scenarios’ output.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="get_cost_data.html">get_cost_data()</a></code>
+
+        </dt>
+        <dd>Get cost data from DAEDALUS scenarios</dd>
+
+        <dt>
+
+          <code><a href="get_costs_list.html">get_costs_list()</a></code>
+
+        </dt>
+        <dd>Get pandemic costs from a list of model outputs</dd>
+
+        <dt>
+
+          <code><a href="get_econ_cost_data.html">get_econ_cost_data()</a></code>
+
+        </dt>
+        <dd>Get economic cost details from an output data.table</dd>
+
+        <dt>
+
+          <code><a href="get_econ_costs_list.html">get_econ_costs_list()</a></code>
+
+        </dt>
+        <dd>Get details of economic costs from model outputs</dd>
+
+        <dt>
+
+          <code><a href="get_epicurve_data.html">get_epicurve_data()</a></code>
+
+        </dt>
+        <dd>Get epidemiological curves from model data</dd>
+
+        <dt>
+
+          <code><a href="get_epidata_list.html">get_epidata_list()</a></code>
+
+        </dt>
+        <dd>Get incidence data from a list of model outputs</dd>
+
+        <dt>
+
+          <code><a href="get_summary_data.html">get_summary_data()</a></code>
+
+        </dt>
+        <dd>Get summary data from DAEDALUS scenarios</dd>
+
+        <dt>
+
+          <code><a href="get_summary_list.html">get_summary_list()</a></code>
+
+        </dt>
+        <dd>Get epidemic summary data from a list of model outputs</dd>
+      </dl></div><div class="section level2">
+      <h2 id="miscellaneous-helper-functions">Miscellaneous helper functions<a class="anchor" aria-label="anchor" href="#miscellaneous-helper-functions"></a></h2>
+
+      <div class="section-desc"><p>Other helpful functions.</p></div>
+
+      <dl></dl></div><div class="section level2">
+
+
+
+
+      <dl><dt>
+
+          <code><a href="ci.html">ci()</a></code>
+
+        </dt>
+        <dd>Calculate an interval</dd>
+
+        <dt>
+
+          <code><a href="make_infection_samples.html">make_infection_samples()</a></code>
+
+        </dt>
+        <dd>Generate multiple <code>&lt;daedalus_infection&gt;</code>s from parameter distributions</dd>
+      </dl></div><div class="section level2">
+      <h2 id="package-constants">Package constants<a class="anchor" aria-label="anchor" href="#package-constants"></a></h2>
+
+      <div class="section-desc"><p>Commonly used constant values</p></div>
 
       <dl></dl></div><div class="section level2">
 
@@ -60,57 +168,9 @@
 
         </dt>
         <dd>Names of age-varying infection parameters</dd>
-
-        <dt>
-
-          <code><a href="ci.html">ci()</a></code>
-
-        </dt>
-        <dd>Calculate an interval</dd>
-
-        <dt>
-
-          <code><a href="get_cost_data.html">get_cost_data()</a></code>
-
-        </dt>
-        <dd>Get cost data from DAEDALUS scenarios</dd>
-
-        <dt>
-
-          <code><a href="get_econ_cost_data.html">get_econ_cost_data()</a></code>
-
-        </dt>
-        <dd>Get economic cost details from an output data.table</dd>
-
-        <dt>
-
-          <code><a href="get_epicurve_data.html">get_epicurve_data()</a></code>
-
-        </dt>
-        <dd>Get epidemiological curves from model data</dd>
-
-        <dt>
-
-          <code><a href="get_summary_data.html">get_summary_data()</a></code>
-
-        </dt>
-        <dd>Get summary data from DAEDALUS scenarios</dd>
-
-        <dt>
-
-          <code><a href="make_infection_samples.html">make_infection_samples()</a></code>
-
-        </dt>
-        <dd>Generate multiple <code>&lt;daedalus_infection&gt;</code>s from parameter distributions</dd>
-
-        <dt>
-
-          <code><a href="run_scenarios.html">run_scenarios()</a></code>
-
-        </dt>
-        <dd>Run multiple DAEDALUS scenarios</dd>
       </dl></div>
-  </main></div>
+  </main><aside class="col-md-3"><nav id="toc" aria-label="Table of contents"><h2>On this page</h2>
+    </nav></aside></div>
 
 
     <footer><div class="pkgdown-footer-left">

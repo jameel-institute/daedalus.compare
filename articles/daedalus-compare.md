@@ -1,4 +1,4 @@
-# ji-rpkg-template
+# Getting started with multi-scenario modelling and outcome comparisons
 
 This example shows how to model multiple pandemic response scenarios in
 the U.K. with uncertainty in \\R_0\\ of an H1N1-like infection. **Note
@@ -13,6 +13,7 @@ library(daedalus) # needed only for custom NPIs
 library(daedalus.compare)
 
 # make list of infection objects with R0 of 1.0 -- 2.0 with skewed distribution
+set.seed(1)
 infection_list <- make_infection_samples(
   "influenza_2009",
   param_distributions = list(
@@ -55,11 +56,11 @@ output <- run_scenarios(
 
 # view output which is a data.table
 output
-#>       response time_end     output
-#>         <char>    <num>     <list>
-#> 1:        none      200 <list[10]>
-#> 2: elimination      200 <list[10]>
-#> 3:      custom      200 <list[10]>
+#>       response vaccination time_end     output
+#>         <char>      <char>    <num>     <list>
+#> 1:        none        none      200 <list[10]>
+#> 2: elimination        none      200 <list[10]>
+#> 3:      custom        none      200 <list[10]>
 
 # get epi-curve data
 disease_tags <- sprintf("sample_%i", seq_along(infection_list))

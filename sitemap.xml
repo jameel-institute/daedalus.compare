@@ -2,6 +2,7 @@
 <url><loc>https://jameel-institute.github.io/daedalus.compare/404.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/LICENSE-text.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/LICENSE.html</loc></url>
+<url><loc>https://jameel-institute.github.io/daedalus.compare/articles/comparing_vaccination.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/articles/daedalus-compare.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/articles/index.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/authors.html</loc></url>
@@ -22,5 +23,6 @@
 <url><loc>https://jameel-institute.github.io/daedalus.compare/reference/make_infection_samples.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/reference/run_scenarios.html</loc></url>
 <url><loc>https://jameel-institute.github.io/daedalus.compare/reference/validate_npi_list_input.html</loc></url>
+<url><loc>https://jameel-institute.github.io/daedalus.compare/reference/validate_vax_list_input.html</loc></url>
 </urlset>
 
