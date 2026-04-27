@@ -1,5 +1,9 @@
 # daedalus.compare 0.0.6
 
+This patch version updates _daedalus.compare_ to be compatible with _daedalus_ >= v0.2.38 as introduced in [daedalus PR 109](https://github.com/jameel-institute/daedalus/pull/109).
+
+- The function `get_epidata_list()` now accesses compartments "hospitalised_recov" and "hospitalised_death" to calculate total hospital demand.
+
 # daedalus.compare 0.0.5
 
 This patch version allows users to run multiple vaccination scenarios by passing a list of `<daedalus_vaccination>` objects to `run_scenarios()`.
