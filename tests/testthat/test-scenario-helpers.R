@@ -56,6 +56,17 @@ test_that("Fn `get_epicurve_data()` works", {
   expect_no_condition(
     get_epicurve_data(output, disease_tags, "wide")
   )
+
+  epicurve_data <- get_epicurve_data(output)
+  checkmate::expect_subset(
+    unique(epicurve_data[["measure"]]),
+    c(
+      "daily_deaths",
+      "daily_infections",
+      "daily_hospitalisations",
+      "total_hosp"
+    )
+  )
 })
 
 test_that("Fn `get_summary_data()` works", {
