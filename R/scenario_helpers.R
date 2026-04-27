@@ -86,7 +86,11 @@ get_epidata_list <- function(l, names) {
     data.table::setDT(z)
 
     # NOTE: pass option of summarising by age group
-    z <- z[compartment == "hospitalised", list(value = sum(value)), by = "time"]
+    z <- z[
+      data.table::like(compartment, "hospitalised"),
+      list(value = sum(value)),
+      by = "time"
+    ]
     z$measure <- "total_hosp"
 
     z

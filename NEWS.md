@@ -1,3 +1,5 @@
+# daedalus.compare 0.0.6
+
 # daedalus.compare 0.0.5
 
 This patch version allows users to run multiple vaccination scenarios by passing a list of `<daedalus_vaccination>` objects to `run_scenarios()`.
