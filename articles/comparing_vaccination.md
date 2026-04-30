@@ -6,6 +6,7 @@ example is aimed at showing how *daedalus* and *daedalus.compare* can be
 used for vaccination impact modelling.
 
 ``` r
+
 library(daedalus) # needed for custom vaccination objects
 library(daedalus.compare)
 
@@ -37,6 +38,7 @@ passing the vaccination scenarios to the argument `vaccination_strategy`
 as a list.
 
 ``` r
+
 # run over a period of 400 days as late vaccination
 # begins on day 300
 output <- run_scenarios(
@@ -63,6 +65,7 @@ epi_curves <- get_epicurve_data(output, disease_tags)
 ```
 
 ``` r
+
 # plot epi-curve data showing daily hospitalisations
 library(dplyr)
 #> 

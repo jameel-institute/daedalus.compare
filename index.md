@@ -11,6 +11,7 @@ You can install the development version of *daedalus.compare* from the
 Jameel Institute R-universe (recommended) or from GitHub.
 
 ``` r
+
 # installation from R-universe
 install.packages(
   "daedalus.compare", 
@@ -37,6 +38,7 @@ using
 at present.
 
 ``` r
+
 library(daedalus)
 library(daedalus.compare)
 
@@ -85,6 +87,7 @@ epi_curves <- get_epicurve_data(output, disease_tags)
 ```
 
 ``` r
+
 # plot epi-curve data showing daily hospitalisations
 library(dplyr)
 #> 

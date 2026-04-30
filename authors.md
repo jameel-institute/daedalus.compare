@@ -17,13 +17,13 @@ Source:
 [`DESCRIPTION`](https://github.com/jameel-institute/daedalus.compare/blob/main/DESCRIPTION)
 
 Gupte P (2026). *daedalus.compare: Run Multiple Scenarios of the
-Daedalus Model*. R package version 0.0.5,
+Daedalus Model*. R package version 0.0.6,
 <https://github.com/jameel-institute/daedalus.compare>.
 
     @Manual{,
       title = {daedalus.compare: Run Multiple Scenarios of the Daedalus Model},
       author = {Pratik Gupte},
       year = {2026},
-      note = {R package version 0.0.5},
+      note = {R package version 0.0.6},
       url = {https://github.com/jameel-institute/daedalus.compare},
     }

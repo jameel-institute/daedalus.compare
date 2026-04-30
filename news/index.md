@@ -1,5 +1,18 @@
 # Changelog
 
+## daedalus.compare 0.0.6
+
+This patch version updates *daedalus.compare* to be compatible with
+*daedalus* \>= v0.2.38 which introduced separate hospitalisation
+compartments in [daedalus PR
+109](https://github.com/jameel-institute/daedalus/pull/109). This should
+have been fixed in v0.0.4.
+
+- The function
+  [`get_epidata_list()`](https://jameel-institute.github.io/daedalus.compare/reference/get_epidata_list.md)
+  now accesses compartments “hospitalised_recov” and
+  “hospitalised_death” to calculate total hospital demand.
+
 ## daedalus.compare 0.0.5
 
 This patch version allows users to run multiple vaccination scenarios by

@@ -9,6 +9,7 @@ using
 at present.
 
 ``` r
+
 library(daedalus) # needed only for custom NPIs
 library(daedalus.compare)
 
@@ -68,6 +69,7 @@ epi_curves <- get_epicurve_data(output, disease_tags)
 ```
 
 ``` r
+
 # plot epi-curve data showing daily hospitalisations
 library(dplyr)
 #> 
